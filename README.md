@@ -10,6 +10,7 @@ do/don't rules — so every session follows the same style.
 | --- | --- |
 | **coding-principles** | Every coding task — reuse/DRY bias, naming, TypeScript rigor, minimal comments, error handling, do/don't. The base layer. |
 | **ui-review** | Every frontend/UI task, before calling it done — the phone-compact rules (secondary elements shrink to captions, prose hidden on phones, only tables scroll), one-control-per-job pruning, optical equality, and the finishing checklist. |
+| **rwanda-identifiers** | Any field holding a Rwandan phone number or National ID — the accepted spellings, the single normalised stored form, the 16-digit NID rule with its birth-year window, and the optional-field trap. |
 | **nextjs-dashboard** | New frontends / full-stack dashboards — Next.js 15 App Router, React 19, Tailwind v4, shadcn/ui, TanStack Query, next-auth. *Default frontend.* |
 | **express-prisma-api** | Standalone backend APIs — Express + TypeScript + Prisma/MySQL, layered controllers/services, `ApiError`/`ERROR_CODES`, Joi, JWT. *Default backend.* |
 | **react-vite-app** | SPA frontends talking to a separate API — Vite + React 18, react-router, `globalFetch`/`assertApiOk`, react-hook-form + zod, sonner. |
@@ -59,7 +60,7 @@ allowed). It's re-runnable and idempotent; run it again to update.
 
 ```bash
 mkdir -p ~/.claude/skills
-for s in coding-principles nextjs-dashboard express-prisma-api react-vite-app python-app; do
+for s in coding-principles ui-review rwanda-identifiers nextjs-dashboard express-prisma-api react-vite-app python-app; do
   ln -sfn "$(pwd)/skills/$s" ~/.claude/skills/$s
 done
 ```
@@ -79,6 +80,8 @@ install.sh             one-line installer (macOS / Linux / WSL / Git Bash)
 install.ps1            one-line installer (Windows PowerShell)
 skills/
   coding-principles/SKILL.md
+  ui-review/SKILL.md
+  rwanda-identifiers/SKILL.md
   nextjs-dashboard/SKILL.md
   express-prisma-api/SKILL.md
   react-vite-app/SKILL.md

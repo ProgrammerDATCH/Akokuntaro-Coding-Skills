@@ -111,6 +111,26 @@ Self-documenting code first. Good names and types carry the meaning.
 The two ways work comes back rejected are **narrowing the ask** and **calling it done without
 driving it**. Both are avoidable.
 
+### Definition of done — the standing agreement
+
+David's working agreement. It holds unless he overrides it for a given task.
+
+- **Ask clarifying questions BEFORE starting.** Once started, work the batch through non-stop —
+  don't stop halfway to check in; finish all of it.
+- **Done means driven in Chrome at BOTH widths** — ~390px and desktop — with no error left on
+  the screen or in the console.
+- **Where several roles reach the feature, done means driven AS EACH ROLE**, so nobody lands on
+  a scope-specific error.
+- **Use real users from the local database**, and create a user there when a role has none.
+  Fabricated state proves nothing about the scoping rules.
+- **A mobile app is done in the emulator** — same bar, same roles.
+- **Never run more than 2 agents in parallel.**
+- **Commit locally; never push or deploy unless David asks.**
+
+**Two documented overrides.** On a quick fix / small task, and when David explicitly says be
+fast or don't debug, typecheck + lint is the bar — then say in the report that this is all
+that was run.
+
 ### Read the ask for INTENT, not just the literal targets
 
 A request that names two URLs is naming examples, not a whitelist. Before building, ask *who
@@ -180,6 +200,30 @@ target role can NAVIGATE to it.
 
 Report the surfaces exercised and the ones left untested, with the reason. "Verified" must mean
 driven; if it only compiled, say that instead.
+
+### Corrections that keep recurring
+
+Every line below is a real correction from a recent session. Each one costs a round trip.
+
+- **Click the entry AS the role — a working URL proves nothing.** A sidebar item shipped pointing
+  at a path the router never rewrote and 404'd for every head teacher, because it was "verified"
+  by opening the page directly.
+- **A 403 naming a permission the database grants is a CACHE bug, not an RBAC one.** Check the
+  cache before writing a migration — a new grant would have fixed nobody.
+- **Any cache / lock / channel key shared by two apps carries the app name.** Two apps sharing
+  user ids wrote the same Redis key and served each other's permissions.
+- **Never force-move a branch.** Rebase or merge; verify nothing would be lost before any branch
+  move, and after pushing verify production contains every develop commit.
+- **A report's geo LEVEL comes from the reader's ROLE**, never from whichever geo fields their
+  account happens to have filled in — officer records carry geo deeper than the role governs.
+- **Numbers must reconcile** — parts sum to the total, and say so in the report, because he checks.
+- **Sweep the category, not the named instance.** A named example means every sibling of that kind.
+- **Reuse THE component**, never a lookalike built in the same spirit.
+- **Never create backup copies of files** — no `.bak`, `.orig`, `.backup`, not even temporarily.
+  Git is the undo.
+- **Never add Claude/Anthropic attribution** to commits or PRs.
+- **Descriptive prose is desktop furniture** — `hidden sm:block` it on phones, all of it, not just
+  the sentence that was quoted.
 
 ## Do / Don't
 

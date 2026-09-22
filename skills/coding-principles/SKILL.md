@@ -195,6 +195,27 @@ target role can NAVIGATE to it.
   as that role and reaching it through the UI, not by typing the URL.
 - Sidebar visibility has its own gates (role filters, module narrowing, pinned sets) that pass
   API-level testing untouched — the entry point is part of the feature.
+- **Reach every screen the way the user does, every time — including reloads.** Retyping the URL
+  between checks is still testing the deep link; it silently re-verifies the page and never the
+  door. Click the menu item, the card, the tab, the "back" control. A blocking modal over the
+  dashboard, an entry scrolled out of the sidebar, or a menu that needs expanding are all part of
+  what the user has to get through, and only clicking finds them.
+
+### Drive the browser as a person, not as a script
+
+Automating the page from the console proves the FUNCTION works, never the INTERFACE. These are
+the ways a passing script hides a broken screen:
+
+- **Click with the pointer, not `element.click()`.** A DOM click ignores what is on top of the
+  element, so an overlay, a modal or a mis-sized hit target still "passes".
+- **Check the coordinate frame before trusting a click.** A screenshot frame is often not 1:1 with
+  CSS pixels (retina, zoom, a scaled capture). Convert — `frame = css * (frameWidth /
+  window.innerWidth)` — or clicks land on the neighbouring row and the wrong result gets
+  diagnosed as something else entirely.
+- **Type with the keyboard, not by assigning `input.value`.** Only real keystrokes reveal lost
+  focus, remounts, input masks and handlers that swallow keys.
+- **A 404 on a route whose file exists, while its siblings serve, is a stale dev server.**
+  Restart it before reading any code; a long-running watcher drops routes added after it started.
 
 ### Then say plainly what you did and did NOT verify
 
@@ -230,6 +251,12 @@ Every line below is a real correction from a recent session. Each one costs a ro
   scope and pass props.
 - **Type into the field, don't set its value.** Driving a form by assigning `input.value` in the
   console cannot reveal a focus or remount bug; only real keystrokes do.
+- **Navigate by clicking, never by retyping the URL** — a reload by address bar re-tests the page
+  and never the entry point, which is the half that breaks.
+- **Convert CSS coordinates into the screenshot's frame before clicking**, or the click lands on
+  the next item and the wrong thing gets blamed.
+- **Suspect the dev server before the code** when a route 404s but its file is present and its
+  siblings load.
 
 ## Do / Don't
 

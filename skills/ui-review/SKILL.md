@@ -65,8 +65,9 @@ Before reporting UI work done, drive it at BOTH widths — a real desktop viewpo
 4. Horizontal overflow: `scrollWidth > clientWidth` on the document = a bug; on a table
    wrapper = correct.
 5. Two controls doing one job.
-6. The feature reachable through NAVIGATION as the target role — sidebar/menu entry present
-   and landing on the page (a working deep link is not enough).
+6. The feature reachable through NAVIGATION as the target role — click the sidebar/menu entry
+   and land on the page. A working deep link is not enough, and neither is retyping the URL to
+   reload between checks: that re-tests the page and never the door.
 7. Numbers on screen that must re-add to a total nearby actually re-adding.
 
 Report which widths and roles were driven, and what was deliberately left out.

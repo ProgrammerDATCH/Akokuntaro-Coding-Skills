@@ -56,6 +56,21 @@ ways is four rows and four accounts, and a lookup by raw input misses the person
 already there. If an outbound gateway wants `+250…` (SMS), convert at that call site —
 never keep a second spelling in the column.
 
+**Both ends must return the SAME string, not merely agree on what is valid.** The client
+helper and the server helper have to produce the identical canonical form — the one the
+column holds. A frontend `toPhone()` that returns `+250788123456` while the API stores
+`0788123456` "works" only because the server re-normalises on write, and it breaks the
+moment anything compares without a round trip:
+
+- a client-side duplicate check that asks "is this person already in the list?" never matches,
+- an optimistic row shows a different spelling from the one that comes back,
+- a cache key, a `Map` lookup or a `===` between a typed value and a fetched one silently misses.
+
+So: one canonical form, named once (`RWANDA_DIAL_CODE`-style constants are fine, two different
+return shapes are not), and if the server ever re-normalises what the client sent, that is the
+signal the two helpers have drifted — not a safety net to rely on. The same rule holds for the
+NID: one bare 16-digit string on both sides, never a spaced or dashed variant on the form.
+
 ## National ID — Rwandan NID
 
 - Exactly 16 digits, first digit `1`, `2` or `3`: `^[123]\d{15}$`.

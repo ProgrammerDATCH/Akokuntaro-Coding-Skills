@@ -48,6 +48,21 @@ drill/search bar makes an eight-select filter panel redundant; a summary tile ro
 filters makes a chip row redundant. Rebuilding or porting a page is the moment to prune,
 not to faithfully carry the duplication forward.
 
+## A gate must have a way out
+
+A modal that opens by itself and cannot be closed is not a prompt, it is a wall. If a screen
+shows a blocking dialog on arrival — "finish setting these up", "you have N incomplete" — it
+must still let the person leave it:
+
+- Escape and a visible close control both work, and the dialog remembers it was dismissed for
+  the session rather than reopening on every render.
+- Whatever it blocks, the primary navigation stays reachable, so a person who came to do
+  something else can still get there.
+- It states what happens if they ignore it. A gate with no stated consequence reads as a bug.
+
+Test it as the role that actually triggers the condition — the account with nothing outstanding
+never sees the gate, so a pass as that user proves nothing.
+
 ## Paired visuals are optically equal
 
 Two logos, two markers, two columns that read as a pair must match in INK, not in box:
@@ -69,5 +84,7 @@ Before reporting UI work done, drive it at BOTH widths — a real desktop viewpo
    and land on the page. A working deep link is not enough, and neither is retyping the URL to
    reload between checks: that re-tests the page and never the door.
 7. Numbers on screen that must re-add to a total nearby actually re-adding.
+8. Any self-opening dialog closable by Escape and by a control, with the navigation still
+   reachable behind it.
 
 Report which widths and roles were driven, and what was deliberately left out.

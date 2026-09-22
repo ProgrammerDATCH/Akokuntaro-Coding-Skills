@@ -224,6 +224,12 @@ Every line below is a real correction from a recent session. Each one costs a ro
 - **Never add Claude/Anthropic attribution** to commits or PRs.
 - **Descriptive prose is desktop furniture** — `hidden sm:block` it on phones, all of it, not just
   the sentence that was quoted.
+- **Never declare a component inside another component's body.** A nested `Row`/`SearchRow` is a
+  new type on every render, so React unmounts and rebuilds its subtree each keystroke — a search
+  box loses focus mid-word and the keys land on whatever gets focus instead. Hoist it to module
+  scope and pass props.
+- **Type into the field, don't set its value.** Driving a form by assigning `input.value` in the
+  console cannot reveal a focus or remount bug; only real keystrokes do.
 
 ## Do / Don't
 

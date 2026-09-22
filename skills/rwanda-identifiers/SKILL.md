@@ -24,9 +24,16 @@ Normalise first, then validate:
 1. Strip all whitespace.
 2. Strip a leading `+250` or `250`.
 3. If what remains starts with `7`, prefix `0`.
-4. Valid **iff** the result matches `^07\d{8}$`.
+4. Valid **iff** the result matches `^07[2389]\d{7}$`.
+
+The second digit is the carrier, and only `72`, `73`, `78`, `79` are live — `0688…` and
+`0712…` are not Rwandan mobiles and must be refused. If a carrier is ever allotted another
+prefix, widen this set in every copy at once.
 
 ```ts
+/** The live carrier prefixes. Keep identical to the API's own RWANDA_PHONE_REGEX. */
+const RWANDA_PHONE_PATTERN = /^07[2389]\d{7}$/;
+
 export const normalizeRwandaPhone = (value: string): string => {
   let phone = value.replace(/\s+/g, '');
   if (phone.startsWith('+250')) phone = phone.slice(4);
@@ -35,8 +42,14 @@ export const normalizeRwandaPhone = (value: string): string => {
 };
 
 export const isValidRwandaPhone = (value?: string | null): boolean =>
-  !!value && /^07\d{8}$/.test(normalizeRwandaPhone(value));
+  !!value && RWANDA_PHONE_PATTERN.test(normalizeRwandaPhone(value));
 ```
+
+**Never validate with a helper that truncates.** A "take the last nine digits" or
+`.slice(0, 9)` helper is a typing MASK, and reusing it inside the validator makes an
+over-long number valid: `07881234567` trimmed to nine digits is `788123456` — a different
+person's number, accepted silently, and that is who the SMS reaches. Validate the whole
+string against an anchored pattern; mask only where the user is typing.
 
 **Store and compare the normalised `07XXXXXXXX` form, always.** One number typed four
 ways is four rows and four accounts, and a lookup by raw input misses the person who is

@@ -173,7 +173,16 @@ not tested until it has been exercised **as each role that reaches it**.
 - Verify the numbers, not just the absence of an error. A drill that returns 0 where its parent said
   1,079 is a passing request and a broken feature.
 - Check both the empty case and a case with real data — an empty dataset hides most bugs.
-- Read the network log and the console, not only the screenshot.
+- Read the **network log**, not only the screenshot or the console. A 403 on a page that looks
+  fine is a feature silently missing, and it is invisible in a screenshot: the board renders its
+  totals and swallows the drill. Scan every request the page made and account for each non-200,
+  including the ones that were already there before your change.
+- Watch the **cold** load, cache cleared. A defect that lasts thirty seconds is the entire first
+  impression and is gone by the time you look again.
+
+**"I tested it" means the network log was read.** Saying work is verified when only the happy
+path was eyeballed is worse than saying it is untested, because it moves the finding to the
+person who asked for it — and they WILL find it.
 
 ### Numbers must reconcile
 
@@ -216,6 +225,17 @@ the ways a passing script hides a broken screen:
   focus, remounts, input masks and handlers that swallow keys.
 - **A 404 on a route whose file exists, while its siblings serve, is a stale dev server.**
   Restart it before reading any code; a long-running watcher drops routes added after it started.
+
+### When they find a bug you said you had tested
+
+Do not patch only the screenshot they sent. A reported defect is a sample of a class:
+
+1. Reproduce it, and find the CAUSE rather than the symptom. Three "permission denied" pages had
+   three different causes; fixing the visible one would have left two.
+2. Ask what else shares that cause, and sweep for it — every role in the family, every sibling
+   map, every page calling that endpoint.
+3. Re-drive the surfaces you had previously claimed were verified, not just the new one.
+4. Say plainly what the cause was. "Fixed" without a cause invites the same report next week.
 
 ### Then say plainly what you did and did NOT verify
 

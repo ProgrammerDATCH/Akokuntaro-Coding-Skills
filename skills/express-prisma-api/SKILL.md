@@ -235,11 +235,35 @@ An endpoint's reach is described in three places, and they drift:
 3. the frontend sidebar's `roles` array.
 
 Drift shows up as a 403 on a page the sidebar advertises, or a page nobody can reach. When you touch
-any of them, check all three. Prefer the RBAC grant as the single gate and delete the hand-rolled
-allowlist — a second list is a second thing to forget.
+any of them, check all three. Prefer the RBAC grant as the single gate and DELETE the hand-rolled
+allowlist rather than extending it — a second list beside a grant is a second thing to fall behind
+it, and it will. Deleting is safe exactly when the service already clamps the data to the caller:
+check that first, then remove the list and prove each role still gets its own scope, not a wider one.
 
 For a screen that is deliberately shared with everyone, gate on the permission only and scope the
 DATA by the caller instead of refusing the request.
+
+## Adding a role: the enum first, then every map keyed by it
+
+A new role is not finished when it authenticates. Work outward in this order, because each step
+is invisible until the one before it is done:
+
+1. **The app's own role enum, not just the database's.** A hand-maintained `enum UserRole` in
+   `types/` that lags the Prisma schema cannot even EXPRESS the new role — `UserRole.X` does not
+   compile — so every scope map silently omits it. Completing the enum turns the next step's bugs
+   into compile errors, which is the whole point.
+2. **Every `Record<UserRole, …>` and every `switch (role)`.** `grep -rn "Record<UserRole"` and
+   `officerAreaWhere`-style switches. Ask of each: what does the `default` / `?? 0` / missing key
+   MEAN? Usually it means unscoped, which is the widest possible answer.
+3. **The permission grants** — every key each surface the role reaches is gated on, not only the
+   obvious one. A board gated on `reports.view` whose drill is gated on `attendance.view` renders
+   its totals and refuses the click that is the reason the role exists.
+4. **The sidebar entry**, then click it as that role.
+
+**No scope is not no data — it is ALL data.** The fallthrough of a scoping service is the whole
+country. So when a role is missing from a scope map, the symptom is not an error; it is a village
+reader quietly served the nation. Grep for the role family in every file that mentions a sibling
+role before calling the work done, and write the rule down in CLAUDE.md so the next list gets it.
 
 ## Guard clauses must match how the client actually calls
 

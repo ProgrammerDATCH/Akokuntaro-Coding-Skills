@@ -307,6 +307,27 @@ Every line below is a real correction from a recent session. Each one costs a ro
 - **Suspect the dev server before the code** when a route 404s but its file is present and its
   siblings load.
 
+## A location is CHOSEN, never typed
+
+Any administrative place — country, province, district, sector, cell, village — is picked from the
+official list, as a cascading selector where each level is filtered by the one above it. Never a
+free-text box, and never only the deepest level.
+
+**Why:** a typed "Nyanza" arrives as `nyanza`, `NYANZA`, `Nyanza ` and `Nyanaza`, and none of them
+match the schools. Every scope query, every geo join and every report grouping compares these
+strings, so one typo puts a partner in a district that does not exist and their board reads zero
+forever — with nothing on screen to say why.
+
+- Reuse the app's existing selector rather than building another. These repos already have one
+  (`components/LocationSelect.tsx`, backed by `rwanda-geo-structure`) with per-level lock flags.
+- **Lock the levels the viewer is already pinned to; show them, do not hide them.** Somebody
+  creating a record inside their own district should see "Province: South · District: Nyanza"
+  fixed, so they can tell what area they are working in — and cannot leave it.
+- Take the fixed levels from the SERVER's view of the caller, never from the form. A rung read
+  back out of the request is the guard undone.
+- The same rule governs phone numbers and national IDs: use the shared input that normalises them
+  (`RwandaPhoneInput`, `NationalIdField`), never a bare text box.
+
 ## Do / Don't
 
 **Do**

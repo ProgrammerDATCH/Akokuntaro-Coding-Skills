@@ -6,8 +6,10 @@ description: >-
   Apply on ANY coding task in his repos (TypeScript, JavaScript, React,
   Node/Express, Python): how to name things, when to extract/abstract for reuse,
   how strict TypeScript should be, commenting density, error handling, the
-  do/don't list that keeps code consistent, and how to REPORT BACK to him: short
-  key points, never prose, with anything needing his decision flagged.
+  do/don't list that keeps code consistent, where to PUT a capability (with the
+  person who has the knowledge, never behind an admin hand-off), and how to
+  REPORT BACK to him: short key points, never prose, with anything needing his
+  decision flagged.
   Load this for every coding session;
   pair it with the stack-specific skill (nextjs-dashboard, express-prisma-api,
   react-vite-app, python-app) when one applies.
@@ -150,6 +152,11 @@ performs this action and where* — then cover every one of those places.
   descriptive line on that page, not the one sentence quoted. Before finishing, sweep for
   siblings of whatever was named — other text of the same kind, other tiers/roles, the sibling
   app when the codebase has a fork — and state the scope covered.
+- **An unfinished list means the whole job.** "Add big tabs, allow to set password, see if the
+  school has more accounts, search a phone and see the school linked, u get the point" is not four
+  tickets — it is one sentence describing a console that helps somebody on a phone call. Build the
+  capability the examples are pointing at, not the examples. When he writes "you get the point",
+  he has stopped listing, not stopped asking.
 - **Sibling apps converge.** When two apps share a design (a fork), apply the change to both by
   default. If David orders a deliberate divergence, implement it but flag it as a likely
   convergence candidate — ordered divergences have historically been revoked within a day.
@@ -195,6 +202,11 @@ and paired visuals are OPTICALLY equal (ink size), not box-equal.
 - If existing logic silently merges or hides a category (unmarked folded into present), surface
   it in the same turn as a flagged question — even when it is documented and you didn't write it.
   Preserving it just defers the correction to him.
+- **A figure shown as `%` is a SHARE, bounded 0–100.** A change expressed as a fraction of the
+  previous value is arithmetically fine and still wrong on a dashboard: 70 more on a day that had
+  51 renders as "137.3%", which cannot mean anything as a share and makes the card look broken.
+  Compare shares and give the difference in POINTS, and prefer the denominator the rest of the
+  page already uses.
 - Say in the report that the totals reconcile; he will check.
 
 ### Done means discoverable
@@ -306,6 +318,33 @@ Every line below is a real correction from a recent session. Each one costs a ro
   the next item and the wrong thing gets blamed.
 - **Suspect the dev server before the code** when a route 404s but its file is present and its
   siblings load.
+
+## Put the capability where the knowledge is
+
+The single most repeated correction. Four times in one session: add a support user from the board
+that lists them, create one from scratch "so it doesn't require admin to create user first", let
+every partner add the partners below them, make a district partner support by default.
+
+**A workflow that hands off to somebody else to finish is a defect, not a design.** The person
+looking at the screen usually knows the answer — a district partner knows their sector people in a
+way no administrator in the capital does — so make them able to act. "Ask an admin to create the
+account first, then come back" is the shape to watch for.
+
+- **If a role IS the job, do not require a grant for it.** A permission somebody always gets is a
+  step that should not exist. Give it with the role, as a DEFAULT that can still be revoked —
+  default and rule are different, and revocability is usually the property worth keeping.
+- **Offer the direct option beside the safe default.** Restricting a capability in the name of
+  safety gets the restriction removed. Default to the safe path (no password typed, shared
+  temporary credential, reversible action) AND allow the direct one for somebody who is sitting
+  right there. Safety is the default, not the ceiling.
+- **A field the job depends on is required, not optional.** If the workflow cannot proceed without
+  it — a phone number on an account somebody must be able to ring — mark it required on both the
+  form and the server. "Optional" on a load-bearing field is a bug reported later.
+- **Create the whole working thing in one transaction.** A user without their role assignment, or
+  an agent without their permission row, authenticates and then cannot work. Whatever makes the
+  record USABLE is part of creating it, not a follow-up step.
+
+Ask every question you have BEFORE starting; then run to completion without stopping to check in.
 
 ## A location is CHOSEN, never typed
 

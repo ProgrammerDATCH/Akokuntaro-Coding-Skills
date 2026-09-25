@@ -5,8 +5,10 @@ description: >-
   strongly-typed code.
   Apply on ANY coding task in his repos (TypeScript, JavaScript, React,
   Node/Express, Python): how to name things, when to extract/abstract for reuse,
-  how strict TypeScript should be, commenting density, error handling, and the
-  do/don't list that keeps code consistent. Load this for every coding session;
+  how strict TypeScript should be, commenting density, error handling, the
+  do/don't list that keeps code consistent, and how to REPORT BACK to him: short
+  key points, never prose, with anything needing his decision flagged.
+  Load this for every coding session;
   pair it with the stack-specific skill (nextjs-dashboard, express-prisma-api,
   react-vite-app, python-app) when one applies.
 ---
@@ -237,10 +239,37 @@ Do not patch only the screenshot they sent. A reported defect is a sample of a c
 3. Re-drive the surfaces you had previously claimed were verified, not just the new one.
 4. Say plainly what the cause was. "Fixed" without a cause invites the same report next week.
 
-### Then say plainly what you did and did NOT verify
+### Report in key points, and flag anything that needs him
 
-Report the surfaces exercised and the ones left untested, with the reason. "Verified" must mean
-driven; if it only compiled, say that instead.
+**David does not want to read prose.** A long report is a worse report: the one line that mattered
+gets buried and he has to hunt for it. Write the reply as short key points, not paragraphs.
+
+- **Lead with what changed or broke, in one line.** Then the points. No preamble, no recap of the
+  request, no narration of the journey.
+- **One line per point.** If a point needs a "why", it gets a clause, not a paragraph. Cut every
+  sentence that does not change what he knows or does.
+- **Prefix anything he must act on or decide with `⚠️`** — a recommendation, a choice only he can
+  make, a manual step, a risk, something deliberately left undone. He scans for the marker rather
+  than reading for it, so an unflagged ask is an ask he will miss.
+- Nothing else gets the marker. Marking ordinary results trains him to ignore it.
+- Detail belongs in the commit message and the code comments, where it is searchable, not in the
+  reply.
+
+Still say what was verified and what was not — "verified" must mean DRIVEN, and if it only
+compiled, say that instead. Just say it in a line, not a section.
+
+Example shape:
+
+    Partner boards fixed — three separate causes, all shipped.
+
+    - Stale role allowlist beside the RBAC grant; deleted, scope still clamps per role.
+    - Partners lacked `attendance.view`, so the drill 403'd. New migration, VIEW only.
+    - Card linked to the head teacher's page, not theirs.
+
+    Driven as all 8 roles at both widths; numbers reconcile.
+
+    ⚠️ UAT has the roles but no partner accounts — an admin must create them before anyone can
+       sign in as one.
 
 ### Corrections that keep recurring
 

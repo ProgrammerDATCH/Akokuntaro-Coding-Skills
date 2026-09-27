@@ -7,9 +7,10 @@ description: >-
   Node/Express, Python): how to name things, when to extract/abstract for reuse,
   how strict TypeScript should be, commenting density, error handling, the
   do/don't list that keeps code consistent, where to PUT a capability (with the
-  person who has the knowledge, never behind an admin hand-off), and how to
-  REPORT BACK to him: short key points, never prose, with anything needing his
-  decision flagged.
+  person who has the knowledge, never behind an admin hand-off), that a batch of
+  tasks runs to the LAST item without stopping to report or ask in the middle,
+  and how to REPORT BACK to him: short key points, never prose, with anything
+  needing his decision flagged.
   Load this for every coding session;
   pair it with the stack-specific skill (nextjs-dashboard, express-prisma-api,
   react-vite-app, python-app) when one applies.
@@ -25,6 +26,30 @@ philosophy (reuse, naming, typing, comments).
 
 Clean, **reusable**, strongly-typed code. Prefer small composable primitives over
 copy-paste. Code should read well without needing comments to explain *what* it does.
+
+## A batch runs to the last item — never stop in the middle
+
+When he hands over a list, finish **every** item before you write a report. He gives work at
+night and reads it in the morning; a progress summary at item 4 of 7 means he wakes up to half a
+job and has to spend his own time restarting you. This is the single thing that has annoyed him
+most often.
+
+- **Never stop to report progress.** A mid-batch summary is not a courtesy, it is an interruption.
+  The only reason to stop early is a genuine blocker you cannot work around at all.
+- **Never stop to ask a question.** Collect questions as you go, decide the rest yourself under a
+  stated assumption, and put every question at the END, after the last item is done. A question
+  asked in the middle costs him a whole cycle.
+- **Order the work so nothing blocks.** If item 3 needs a decision, do items 4–7 first and come
+  back to 3 with the question written down — do not idle.
+- **Parallelise hard.** Run several agents at once on independent items rather than working
+  through them one at a time; he has said explicitly that "one at a time" is too slow for a batch.
+  Give each agent the full context it needs (ports, tokens, the rules above) so it does not come
+  back to ask.
+- **"Done" means tested**, per the verification rules below — so finishing the batch means every
+  item driven, not every item compiled.
+
+The report comes once, at the end, covering everything: what landed, what was verified, and the
+collected `⚠️` questions.
 
 ## Reuse & abstraction — bias toward DRY (aggressive)
 
@@ -256,6 +281,8 @@ Do not patch only the screenshot they sent. A reported defect is a sample of a c
 **David does not want to read prose.** A long report is a worse report: the one line that mattered
 gets buried and he has to hunt for it. Write the reply as short key points, not paragraphs.
 
+- **Report ONCE, when the whole batch is finished** — see "A batch runs to the last item". A report
+  written at item 4 of 7 reads as a stopping point, and he will have to tell you to carry on.
 - **Lead with what changed or broke, in one line.** Then the points. No preamble, no recap of the
   request, no narration of the journey.
 - **One line per point.** If a point needs a "why", it gets a clause, not a paragraph. Cut every

@@ -394,6 +394,37 @@ forever — with nothing on screen to say why.
 - The same rule governs phone numbers and national IDs: use the shared input that normalises them
   (`RwandaPhoneInput`, `NationalIdField`), never a bare text box.
 
+## A command that resets its target is not a read
+
+Some tooling flags exist **to destroy** what they point at — a shadow-database URL, a
+`--clean` restore, a `reset`, a `--force` sync. They are safe only because the thing they
+name is disposable. Point one at real data and it does exactly what it promises, silently
+and completely.
+
+The trap is that such a flag often sits on a command that reads as diagnostic. "Compare the
+schema to the migrations" sounds like a question; if it takes a URL it resets, it is not a
+question. **The command's name tells you nothing about what the flag does.**
+
+So, before running anything that takes a database or environment URL:
+
+- **Say what each URL argument names and what the command does to it.** If you cannot state
+  that from memory, read the flag's documentation first — not after.
+- **A throwaway target is always `localhost`.** Shadow databases, scratch schemas and test
+  fixtures point at loopback, never at a shared or deployed host.
+- **Give the disposable one a fixed, obvious variable name** and never reuse a production
+  variable for it. A destructive flag fed from `DATABASE_URL` or `PROD_*` is a mistake
+  waiting for a tired evening.
+- **The database NAME proves nothing.** One organisation routinely has `myapp` on two hosts
+  — old and new, staging and prod. Only the **host** distinguishes them, so verify the host
+  and verify the contents (a row count that should be zero, or shouldn't) before acting.
+- **Prefer the non-destructive route.** Drift, state and history can almost always be read
+  out of the deployed system's own bookkeeping instead of rebuilt into a scratch copy.
+- **A diagnostic is never worth a risk to real data.** If the only way to answer a question
+  is a command that might reset something live, the question waits.
+
+If it goes wrong anyway: say so immediately and plainly, before attempting a repair. Time
+is the only thing that helps, and a restore point gets further away every minute.
+
 ## Do / Don't
 
 **Do**
@@ -413,5 +444,7 @@ forever — with nothing on screen to say why.
 - Copy-paste a block a second time instead of extracting it.
 - Sprinkle `any`, `// @ts-ignore`, or `eslint-disable` to silence the compiler.
 - Hard-code values that recur (IDs, URLs, colours, status strings).
+- Hand a real database URL to a flag that resets its target (`--shadow-database-url` and
+  friends) — those point at `localhost`, always, even for a quick check.
 - Add narrating comments, dead code, or speculative abstraction.
 - Introduce a new library when an existing dependency already does the job.

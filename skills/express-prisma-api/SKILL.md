@@ -5,11 +5,13 @@ description: >-
   TypeScript + Prisma (MySQL). Use whenever creating or editing an Express/Node
   API server, adding an endpoint, controller, service, route, Joi validation,
   middleware, or Prisma model, OR running/troubleshooting Prisma migrations
-  (migrate dev, drift, migrate deploy, migrate resolve) in his repos (e.g. Ireme
-  backends). Covers the layered architecture (routes → middleware → controllers →
+  (migrate dev, migrate diff, drift, migrate deploy, migrate resolve, shadow
+  database) in his repos (e.g. Ireme backends). Covers the layered architecture
+  (routes → middleware → controllers →
   services), the ApiError/ERROR_CODES error model, the sendResponse envelope,
   catchAsync, JWT auth, winston logging, path aliases, the migrations workflow
-  (always migrate dev, never db push), and the Docker→ghcr.io→ssh deploy flow.
+  (always migrate dev, never db push, shadow database on localhost only), and the
+  Docker→ghcr.io→ssh deploy flow.
   This is the default backend for new APIs. Pair with coding-principles.
 ---
 
@@ -186,6 +188,69 @@ that is committed and replayed everywhere. Never mutate the DB shape outside a m
   reset (`npx prisma migrate reset`) acceptable to rebuild from history.
 - **NEVER `npx prisma db push`** (or the `db:push` script). It bypasses migration history,
   causes the drift above, and isn't reproducible in prod. Treat it as forbidden.
+
+### The shadow database is ALWAYS localhost — no exceptions
+
+A shadow database is not a spare connection Prisma reads. **Prisma drops and recreates
+whatever the shadow database points at**, every time. That is the feature, not a risk: it
+replays migration history into an empty database to compare against the schema. So the
+shadow URL must name a database whose contents are already worthless.
+
+Two absolute rules:
+
+1. **The shadow URL is always `localhost` / `127.0.0.1`.** Never a staging host, never a
+   shared dev server, never "just this once" a remote one. If the URL holds anything but a
+   loopback host, the command is wrong — stop and fix the URL, don't run it.
+2. **In `.env` it is always `SHADOW_DATABASE_URL`.** Never another key name, never reuse
+   `DATABASE_URL` / `DIRECT_URL` / any production variable for it. One fixed name means a
+   reader can tell at a glance which variable is the destructive one.
+
+```env
+# safe: a throwaway local database Prisma may reset at will
+SHADOW_DATABASE_URL="postgresql://postgres:postgres@localhost:5432/myapp_shadow"
+```
+
+```prisma
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")   // localhost only
+}
+```
+
+**The flag that does the damage is `--shadow-database-url`.** It turns up most often on
+`prisma migrate diff`, which reads as a harmless "compare schema against migrations" check
+— and is, right until the URL handed to it is a real database. Then the check destroys it,
+and succeeds quietly enough that the next error you see is the app failing on missing
+tables.
+
+```bash
+# NEVER — resets the target. A real host here wipes it.
+npx prisma migrate diff --from-migrations prisma/migrations \
+  --to-schema-datamodel prisma/schema.prisma \
+  --shadow-database-url "$ANY_REAL_DATABASE_URL"
+
+# Fine — loopback, disposable
+npx prisma migrate diff --from-migrations prisma/migrations \
+  --to-schema-datamodel prisma/schema.prisma \
+  --shadow-database-url "$SHADOW_DATABASE_URL"
+```
+
+To check a **deployed** database for drift, never use a shadow database at all. Read its
+own bookkeeping instead — no destructive flag involved:
+
+```bash
+npx prisma migrate status                # against that database's own URL
+# or diff applied names against the committed folder names
+psql "$URL" -c 'select migration_name from _prisma_migrations order by finished_at;'
+```
+
+Before running any Prisma command that takes a URL, state which database each URL argument
+names and what the command does to it. Databases in one organisation commonly share a name
+across hosts (`myapp` on the old server, `myapp` on the new one), so the database name
+proves nothing — the **host** is the only thing that distinguishes them, and a restore or
+migration pointed at the wrong one looks identical until the data is gone.
 
 ### Production / CI: `migrate deploy` and resolving a stuck state
 

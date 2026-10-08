@@ -128,6 +128,9 @@ theme tokens; no inline style theming or hex literals in components.
   paragraph, and most paragraphs shouldn't be on screen at all.
 - **Plain, common English.** Write the way users talk — no jargon or internal terms.
   "Save" not "Persist", "Not paid" not "Outstanding remittance".
+- **Never explain the backend.** No copy, tile or badge that reveals how the system decides,
+  limits or counts ("you won't see this again until…", "Seen 3 / 116", "Review mode"). Say what
+  to do, not how it works — see coding-principles, "Never show users how the system works".
 - **Be specific.** A label or message says exactly what it means: "Add invoice" not
   "Submit", "3 overdue" not "Some items need attention".
 - **Summarise by default.** Lead with the headline number/status; tuck detail behind a

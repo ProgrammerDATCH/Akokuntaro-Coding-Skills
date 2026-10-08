@@ -118,6 +118,9 @@ export const createUser = async (input: CreateUserInput) => {
 
 - Shape Prisma rows into typed domain models before returning — a `transformPrismaData`
   / `transformUser` helper, mapping `null → undefined` and dropping internal fields.
+- A user-facing response carries only what that user's screen shows. Internal counts, limits,
+  pool sizes and draw modes stay server-side (or on an admin endpoint) — a number the UI hides is
+  still readable in the network tab.
 - Soft-delete / active filtering: query with `isActive: true` where the model supports it.
 - Validate uniqueness/existence in the service and throw the right `ApiError`.
 

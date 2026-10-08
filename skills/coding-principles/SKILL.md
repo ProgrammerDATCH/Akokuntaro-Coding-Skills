@@ -373,6 +373,26 @@ account first, then come back" is the shape to watch for.
 
 Ask every question you have BEFORE starting; then run to completion without stopping to check in.
 
+## Never show users how the system works
+
+The screen says what the user can DO, never how the backend decides. A rule, limit, draw order
+or count that runs behind the scenes is the product's business, not the user's — showing it
+teaches people to game it, and makes the product look like a machine with its lid off.
+
+**Why:** a practice game told players "You never get the same question twice until you have seen
+them all", a "Seen 3 / 116" tile and a New/Review badge: the size of the bank, how far through it
+each player was, and which mode the draw was in. All three were removed.
+
+- **No mechanism in copy.** No "we pick at random from…", "you won't see this again until…",
+  "after 5 tries…", "ranked by…", "refreshed every N minutes". Say what to do: "Start", "20 questions".
+- **No internal counts or limits.** Bank sizes, quotas, caps, thresholds, how much of a pool a user
+  has used, a cooldown's length — none of it on screen. A rule the user must obey to succeed (a
+  public pass mark, a form's character limit) is not internal; show those.
+- **The API does not send it either.** A count hidden only by the UI is still readable in the
+  network tab. Shape the player-facing response down to what the screen shows (`hasQuestions`, not
+  `totalQuestions`/`playedQuestions`/`nextMode`); admins get the numbers on their own endpoint.
+- **Comments and commit messages are where the mechanism is explained** — never the UI.
+
 ## A location is CHOSEN, never typed
 
 Any administrative place — country, province, district, sector, cell, village — is picked from the
@@ -433,6 +453,7 @@ is the only thing that helps, and a restore point gets further away every minute
 - Type the boundaries; thread types through.
 - Co-locate by feature where the stack supports it.
 - Name things — and write any user-facing text — in plain, specific, common English.
+- Keep how the system works off the screen and out of user-facing responses.
 
 **Don't**
 - Narrow a request to the literal URLs/files it named while leaving the same feature broken next door.
@@ -447,4 +468,5 @@ is the only thing that helps, and a restore point gets further away every minute
 - Hand a real database URL to a flag that resets its target (`--shadow-database-url` and
   friends) — those point at `localhost`, always, even for a quick check.
 - Add narrating comments, dead code, or speculative abstraction.
+- Show users internal rules, limits, draw logic or secret counts — in copy, tiles, badges or API payloads.
 - Introduce a new library when an existing dependency already does the job.

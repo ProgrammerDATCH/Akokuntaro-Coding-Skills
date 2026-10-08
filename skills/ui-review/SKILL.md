@@ -90,6 +90,13 @@ Placeholders are read as results. Every one of these shipped and came back:
 Drive the cold load, not the warm one — clear the cache first. A bug that lasts thirty seconds
 is invisible on a second visit and is the whole experience on a first.
 
+## Nothing on screen explains the machinery
+
+Sweep every label, caption, tile and badge for text that tells the user how the system works —
+a draw rule, a cap, a pool size, a "seen X of Y", a mode name. Remove it; say what to do instead.
+Check the API response the page reads too: a hidden count is still a leaked count. See
+coding-principles, "Never show users how the system works".
+
 ## The pass itself
 
 Before reporting UI work done, drive it at BOTH widths — a real desktop viewport and a

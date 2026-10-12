@@ -414,6 +414,17 @@ forever — with nothing on screen to say why.
 - The same rule governs phone numbers and national IDs: use the shared input that normalises them
   (`RwandaPhoneInput`, `NationalIdField`), never a bare text box.
 
+## Every script gets a file:// link for review
+
+Whenever you write a script — a backfill, a cleanup, a one-off, a migration helper, anything
+David will run himself — give him a clickable `file://` link to it in the reply (the absolute
+path, spaces encoded as `%20`, e.g. `file:///Users/<you>/My%20Project/scripts/backfillThing.ts`).
+He opens it in the browser and reads the code to judge it safe before running it.
+
+- Put the link next to the run instructions, before the commands, so the read comes first.
+- Give it for every script, every time — including ones already shown in a PR.
+- Never run a script against production yourself; he runs it after reading it.
+
 ## A command that resets its target is not a read
 
 Some tooling flags exist **to destroy** what they point at — a shadow-database URL, a

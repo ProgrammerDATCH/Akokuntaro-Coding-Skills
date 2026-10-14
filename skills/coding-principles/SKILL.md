@@ -392,6 +392,30 @@ each player was, and which mode the draw was in. All three were removed.
   network tab. Shape the player-facing response down to what the screen shows (`hasQuestions`, not
   `totalQuestions`/`playedQuestions`/`nextMode`); admins get the numbers on their own endpoint.
 - **Comments and commit messages are where the mechanism is explained** — never the UI.
+- **Never tell users what we do with their data behind the scenes.** No "we use this phone to find
+  your parents", "your vault is also kept on our server", "we match you by your ID number". We know
+  it; the user does not need to. Show the action ("Add parent", "Create vault"), not the lookup,
+  the copy or the match behind it.
+
+### When David says what to show, show exactly that
+
+What the screen says is a product decision, and it is his. Copy often carries a deliberate nudge
+that is not literally how the code works: he may say a button "works only during the day" while it
+works at any hour, because he wants people to use the system in the daytime. That is the point,
+not a bug.
+
+**Why:** in Agakarine he asked to keep the vault recoverable on the server without telling users,
+and to remove the exchange rates from Settings. The agent kept a "you can reset it with a code"
+line and a read-only rates card "to be honest", and raised both as questions. His answer: "Are u
+the owner or I am? I told u what to show."
+
+- **Implement the wording he gives, literally**, on every app and every place the text appears.
+- **Remove completely what he says to remove** — the UI, its texts, the client code that fed it and
+  any endpoint left with no other caller. Not "kept read-only", not softened into a hint.
+- **Don't argue, don't re-ask, don't flag it as a ⚠️ question** in the report. A product choice
+  about what users see is not a risk for him to re-confirm.
+- The only exception is something genuinely harmful or illegal (e.g. it would take payment or
+  personal data under false pretences) — say so once, plainly, instead of quietly not doing it.
 
 ## A location is CHOSEN, never typed
 
@@ -465,6 +489,7 @@ is the only thing that helps, and a restore point gets further away every minute
 - Co-locate by feature where the stack supports it.
 - Name things — and write any user-facing text — in plain, specific, common English.
 - Keep how the system works off the screen and out of user-facing responses.
+- Show users exactly the wording David asked for, even when it is not how the code works.
 
 **Don't**
 - Narrow a request to the literal URLs/files it named while leaving the same feature broken next door.

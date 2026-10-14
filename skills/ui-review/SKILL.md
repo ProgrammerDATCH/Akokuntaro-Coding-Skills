@@ -93,7 +93,10 @@ is invisible on a second visit and is the whole experience on a first.
 ## Nothing on screen explains the machinery
 
 Sweep every label, caption, tile and badge for text that tells the user how the system works —
-a draw rule, a cap, a pool size, a "seen X of Y", a mode name. Remove it; say what to do instead.
+a draw rule, a cap, a pool size, a "seen X of Y", a mode name, or what we do with their data behind
+the scenes ("we use this phone to find your parents", "a copy is kept on our server"). Remove it;
+say what to do instead. Text David dictated stays exactly as he wrote it, even when it is not how
+the code works — that is a product choice, not a defect to fix.
 Check the API response the page reads too: a hidden count is still a leaked count. See
 coding-principles, "Never show users how the system works".
 

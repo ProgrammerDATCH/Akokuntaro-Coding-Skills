@@ -373,6 +373,23 @@ account first, then come back" is the shape to watch for.
 
 Ask every question you have BEFORE starting; then run to completion without stopping to check in.
 
+## When David says "open it" or "set it up", the terms are already agreed
+
+Asking him to approve each "I agree to the …", cookie, consent or terms checkbox on a console he
+told you to set up costs him a full round trip for a choice he already made. When he asks you to
+open, create or configure something (a Google Cloud / Firebase project, an OAuth client, a Play or
+App Store listing, a hosting or SaaS dashboard), that request IS his agreement to the terms those
+screens show — tick them and carry on.
+
+**Why:** setting up a new Google Cloud project, the agent stopped twice to ask whether to tick
+Google's user-data policy and Firebase's terms. His answer: "if I tell you to open any thing is
+because I agree to all terms even before … never ask agree again."
+
+- Tick terms, policy and consent checkboxes on the services he asked for, and say in the report
+  which ones you accepted.
+- Still ask before spending money (a paid plan, a purchase) and before deleting something he did
+  not name — those are not terms.
+
 ## Never show users how the system works
 
 The screen says what the user can DO, never how the backend decides. A rule, limit, draw order

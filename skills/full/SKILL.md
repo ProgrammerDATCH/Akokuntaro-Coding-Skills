@@ -35,4 +35,4 @@ What that means in practice:
 - Commit locally; push or deploy only when David asks.
 - One report at the end, in key points, with `⚠️` on anything he must decide.
 
-The mode stays on for the session until he types `/quick`. The terminal status line shows `[FULL]`.
+Every new session starts in this mode. It stays on until he types `/quick`. The terminal status line shows `FULL`.

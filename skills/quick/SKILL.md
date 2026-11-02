@@ -21,4 +21,4 @@ What that means in practice:
 - Report in key points and say plainly that only code checks ran.
 - The coding-principles and ui-review rules still apply to the code itself.
 
-The mode stays on for the session until he types `/full`. The terminal status line shows `[QUICK]`.
+The mode stays on for the session (resumes included) until he types `/full`; new sessions start in FULL. The terminal status line shows `QUICK`.

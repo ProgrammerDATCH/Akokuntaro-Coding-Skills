@@ -56,7 +56,7 @@ installer only.
 
 It also installs David's two **work modes** as skills — `/full` (plan, then full browser testing per
 role) and `/quick` (code checks only) — plus a hook that remembers the mode per session and a status
-line badge (`[FULL]`, `[QUICK]`, `[MODE?]`) in front of whatever status line was already set.
+line badge (`FULL` or `QUICK`; every new session starts in FULL) in front of whatever status line was already set.
 
 **Env overrides**
 
@@ -93,7 +93,7 @@ install.sh             one-line installer (macOS / Linux / WSL / Git Bash)
 install.ps1            one-line installer (Windows PowerShell)
 hooks/
   work-mode.sh         UserPromptSubmit hook: records FULL / QUICK per session, reminds the model
-  statusline-mode.sh   status line badge [FULL] / [QUICK] / [MODE?] in front of the previous status line
+  statusline-mode.sh   status line badge FULL / QUICK in front of the previous status line
   memory-guard.sh      Claude Code PreToolUse hook: keeps parallel work inside a 16 GB machine's budget
 skills/
   coding-principles/SKILL.md

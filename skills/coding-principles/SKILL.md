@@ -183,14 +183,14 @@ driving it**. Both are avoidable.
 ### Definition of done — two work modes, FULL and QUICK
 
 David works in one of two modes per session, and switches with a command (the terminal status line
-shows `[FULL]`, `[QUICK]` or `[MODE?]`):
+shows `FULL` or `QUICK`). **Every new session starts in FULL**; a session keeps the mode it was
+switched to, resumes included.
 
 - **FULL** (`/full` — the `full` skill): ask everything first, then non-stop to the last item, each
   item driven in Chrome at both widths as every affected role (apps: in the emulator). The list below.
 - **QUICK** (`/quick` — the `quick` skill): apply fixes and verify in code only (typecheck, lint,
   targeted tests); no browser, no push, no deploy; say in the report that only code checks ran.
-- **No mode set and several tasks handed over → ask him which mode before starting.** One question,
-  the two options; never guess. A hook reminds you of the current mode on every message.
+- A hook reminds you of the current mode on every message; follow that, not an earlier habit.
 
 FULL mode, in detail:
 

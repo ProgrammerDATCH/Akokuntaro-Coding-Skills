@@ -5,9 +5,8 @@ input=$(cat)
 session=$(printf '%s' "$input" | jq -r '.session_id // empty' 2>/dev/null)
 mode=$(cat "$HOME/.claude/modes/$session" 2>/dev/null)
 case "$mode" in
-  FULL) badge=$'\033[1;30;42m FULL \033[0m' ;;
   QUICK) badge=$'\033[1;30;43m QUICK \033[0m' ;;
-  *) badge=$'\033[2m[MODE?]\033[0m' ;;
+  *) badge=$'\033[1;30;42m FULL \033[0m' ;;  # new sessions start in FULL
 esac
 inner_file="$HOME/.claude/hooks/statusline-inner.txt"
 if [ -s "$inner_file" ]; then

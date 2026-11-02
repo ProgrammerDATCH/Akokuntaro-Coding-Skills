@@ -19,7 +19,7 @@ set -euo pipefail
 REPO_SLUG="ProgrammerDATCH/Akokuntaro-Coding-Skills"
 BRANCH="${SKILLS_BRANCH:-develop}"
 SRC_DIR="${SKILLS_SRC_DIR:-$HOME/.local/share/coding-style-skills}"
-SKILLS="coding-principles ui-review rwanda-identifiers nextjs-dashboard express-prisma-api react-vite-app python-app"
+SKILLS="coding-principles ui-review rwanda-identifiers nextjs-dashboard express-prisma-api react-vite-app python-app full quick"
 
 info() { printf '\033[1;34m==>\033[0m %s\n' "$*"; }
 ok()   { printf '\033[1;32m  +\033[0m %s\n' "$*"; }
@@ -111,6 +111,38 @@ install_memory_guard() {
   ok "memory guard hook -> $settings"
 }
 
+# Claude Code only: David's work modes, FULL (/full) and QUICK (/quick). work-mode.sh records the
+# mode per session and reminds the model of it on every message; statusline-mode.sh shows it in front
+# of whatever status line was already set up (saved to statusline-inner.txt). Idempotent; needs jq.
+install_work_mode() {
+  claude_dir="${CLAUDE_CONFIG_DIR%%:*}"; claude_dir="${claude_dir:-$HOME/.claude}"
+  [ -d "$claude_dir" ] || return 0
+  mkdir -p "$claude_dir/hooks"
+  for script in work-mode.sh statusline-mode.sh; do
+    ln -sfn "$SRC_DIR/hooks/$script" "$claude_dir/hooks/$script" 2>/dev/null \
+      || cp "$SRC_DIR/hooks/$script" "$claude_dir/hooks/$script"
+  done
+  command -v jq >/dev/null 2>&1 || { warn "jq not found — add the work-mode hook and status line by hand"; return 0; }
+  settings="$claude_dir/settings.json"
+  [ -f "$settings" ] || echo '{}' > "$settings"
+  tmp="$(mktemp)"
+  if ! jq -e '[.hooks.UserPromptSubmit[]?.hooks[]?.command] | any(test("work-mode.sh"))' "$settings" >/dev/null 2>&1; then
+    jq --arg cmd "bash \"$claude_dir/hooks/work-mode.sh\"" \
+      '.hooks.UserPromptSubmit = ((.hooks.UserPromptSubmit // []) + [{"hooks":[{"type":"command","command":$cmd,"timeout":5}]}])' \
+      "$settings" > "$tmp" && mv "$tmp" "$settings"
+    ok "work mode hook -> $settings"
+  fi
+  current="$(jq -r '.statusLine.command // empty' "$settings")"
+  case "$current" in
+    *statusline-mode.sh*) ok "work mode status line already set" ;;
+    *)
+      printf '%s' "$current" > "$claude_dir/hooks/statusline-inner.txt"
+      jq --arg cmd "bash \"$claude_dir/hooks/statusline-mode.sh\"" \
+        '.statusLine = ((.statusLine // {}) + {"type":"command","command":$cmd})' "$settings" > "$tmp" && mv "$tmp" "$settings"
+      ok "work mode status line -> $settings (previous one kept after the badge)" ;;
+  esac
+}
+
 main() {
   info "Installing coding-style skills"
   resolve_source
@@ -125,6 +157,7 @@ main() {
     [ -n "$entry" ] && install_into "${entry%%|*}" "${entry#*|}"
   done
   install_memory_guard
+  install_work_mode
   info "Done — installed: ${SKILLS// /, }"
   info "Start a new agent session to pick up the skills."
 }

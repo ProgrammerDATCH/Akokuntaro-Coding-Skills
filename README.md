@@ -11,6 +11,7 @@ do/don't rules — so every session follows the same style.
 | **coding-principles** | Every coding task — reuse/DRY bias, naming, TypeScript rigor, minimal comments, error handling, do/don't. The base layer. |
 | **ui-review** | Every frontend/UI task, before calling it done — the phone-compact rules (secondary elements shrink to captions, prose hidden on phones, only tables scroll), one-control-per-job pruning, optical equality, and the finishing checklist. |
 | **rwanda-identifiers** | Any field holding a Rwandan phone number or National ID — the accepted spellings, the single normalised stored form, the 16-digit NID rule with its birth-year window, and the optional-field trap. |
+| **full** / **quick** | David's two work modes, typed as `/full` and `/quick`. FULL: questions first, then non-stop, every item driven in Chrome at both widths as every role (apps in the emulator). QUICK: fixes verified in code only, no browser, push or deploy. |
 | **nextjs-dashboard** | New frontends / full-stack dashboards — Next.js 15 App Router, React 19, Tailwind v4, shadcn/ui, TanStack Query, next-auth. *Default frontend.* |
 | **express-prisma-api** | Standalone backend APIs — Express + TypeScript + Prisma/MySQL, layered controllers/services, `ApiError`/`ERROR_CODES`, Joi, JWT. *Default backend.* |
 | **react-vite-app** | SPA frontends talking to a separate API — Vite + React 18, react-router, `globalFetch`/`assertApiOk`, react-hook-form + zod, sonner. |
@@ -53,6 +54,10 @@ browser — the rules in coding-principles "Keep the dev machine alive". It adds
 hook to `~/.claude/settings.json` once (needs `jq`) and leaves the rest of the file alone. Bash
 installer only.
 
+It also installs David's two **work modes** as skills — `/full` (plan, then full browser testing per
+role) and `/quick` (code checks only) — plus a hook that remembers the mode per session and a status
+line badge (`[FULL]`, `[QUICK]`, `[MODE?]`) in front of whatever status line was already set.
+
 **Env overrides**
 
 | Var | Default | Purpose |
@@ -87,10 +92,14 @@ specific about triggers. After editing, changes apply on the next session (no re
 install.sh             one-line installer (macOS / Linux / WSL / Git Bash)
 install.ps1            one-line installer (Windows PowerShell)
 hooks/
+  work-mode.sh         UserPromptSubmit hook: records FULL / QUICK per session, reminds the model
+  statusline-mode.sh   status line badge [FULL] / [QUICK] / [MODE?] in front of the previous status line
   memory-guard.sh      Claude Code PreToolUse hook: keeps parallel work inside a 16 GB machine's budget
 skills/
   coding-principles/SKILL.md
   ui-review/SKILL.md
+  full/SKILL.md
+  quick/SKILL.md
   rwanda-identifiers/SKILL.md
   nextjs-dashboard/SKILL.md
   express-prisma-api/SKILL.md

@@ -180,9 +180,19 @@ browser. The rest is on you.
 The two ways work comes back rejected are **narrowing the ask** and **calling it done without
 driving it**. Both are avoidable.
 
-### Definition of done — the standing agreement
+### Definition of done — two work modes, FULL and QUICK
 
-David's working agreement. It holds unless he overrides it for a given task.
+David works in one of two modes per session, and switches with a command (the terminal status line
+shows `[FULL]`, `[QUICK]` or `[MODE?]`):
+
+- **FULL** (`/full` — the `full` skill): ask everything first, then non-stop to the last item, each
+  item driven in Chrome at both widths as every affected role (apps: in the emulator). The list below.
+- **QUICK** (`/quick` — the `quick` skill): apply fixes and verify in code only (typecheck, lint,
+  targeted tests); no browser, no push, no deploy; say in the report that only code checks ran.
+- **No mode set and several tasks handed over → ask him which mode before starting.** One question,
+  the two options; never guess. A hook reminds you of the current mode on every message.
+
+FULL mode, in detail:
 
 - **Ask clarifying questions BEFORE starting.** Once started, work the batch through non-stop —
   don't stop halfway to check in; finish all of it.
@@ -196,9 +206,8 @@ David's working agreement. It holds unless he overrides it for a given task.
 - **Never run more than 2 agents in parallel.**
 - **Commit locally; never push or deploy unless David asks.**
 
-**Two documented overrides.** On a quick fix / small task, and when David explicitly says be
-fast or don't debug, typecheck + lint is the bar — then say in the report that this is all
-that was run.
+In QUICK mode — and when David says mid-task to be fast or that one role is enough — typecheck +
+lint + targeted tests is the bar; say in the report that this is all that was run.
 
 ### Read the ask for INTENT, not just the literal targets
 

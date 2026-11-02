@@ -88,6 +88,29 @@ install_into() {
   ok "$name -> $dir"
 }
 
+# Claude Code only: the memory guard (see coding-principles "Keep the dev machine alive") as a
+# PreToolUse hook on Bash. The script is symlinked so a pull updates it; settings.json gains the hook
+# once and is otherwise left exactly as it was. Needs jq; skipped with a warning without it.
+install_memory_guard() {
+  claude_dir="${CLAUDE_CONFIG_DIR%%:*}"; claude_dir="${claude_dir:-$HOME/.claude}"
+  [ -d "$claude_dir" ] || return 0
+  mkdir -p "$claude_dir/hooks"
+  ln -sfn "$SRC_DIR/hooks/memory-guard.sh" "$claude_dir/hooks/memory-guard.sh" 2>/dev/null \
+    || cp "$SRC_DIR/hooks/memory-guard.sh" "$claude_dir/hooks/memory-guard.sh"
+  command -v jq >/dev/null 2>&1 || { warn "jq not found — add the memory-guard hook to settings.json by hand"; return 0; }
+  settings="$claude_dir/settings.json"
+  [ -f "$settings" ] || echo '{}' > "$settings"
+  if jq -e '[.hooks.PreToolUse[]?.hooks[]?.command] | any(test("memory-guard.sh"))' "$settings" >/dev/null 2>&1; then
+    ok "memory guard hook already registered"
+    return 0
+  fi
+  tmp="$(mktemp)"
+  jq --arg cmd "bash \"$claude_dir/hooks/memory-guard.sh\"" \
+    '.hooks.PreToolUse = ((.hooks.PreToolUse // []) + [{"matcher":"Bash","hooks":[{"type":"command","command":$cmd,"timeout":10,"statusMessage":"Checking memory"}]}])' \
+    "$settings" > "$tmp" && mv "$tmp" "$settings"
+  ok "memory guard hook -> $settings"
+}
+
 main() {
   info "Installing coding-style skills"
   resolve_source
@@ -101,6 +124,7 @@ main() {
   printf '%s\n' "$agents" | while IFS= read -r entry; do
     [ -n "$entry" ] && install_into "${entry%%|*}" "${entry#*|}"
   done
+  install_memory_guard
   info "Done — installed: ${SKILLS// /, }"
   info "Start a new agent session to pick up the skills."
 }

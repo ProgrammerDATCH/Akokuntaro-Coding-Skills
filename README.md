@@ -45,6 +45,12 @@ The installer fetches (or updates) the skills source, detects every agent that u
 `CLAUDE_CONFIG_DIR`) — and **symlinks** each skill into it (copying where symlinks aren't
 allowed). It's re-runnable and idempotent; run it again to update.
 
+On Claude Code it also installs the **memory guard** (`hooks/memory-guard.sh`) as a `PreToolUse`
+hook on Bash: it refuses a jest run with no worker cap, a second `next build`, and any heavy job
+while swap is above 6 GB — the rules in coding-principles "Keep the dev machine alive". It adds the
+hook to `~/.claude/settings.json` once (needs `jq`) and leaves the rest of the file alone. Bash
+installer only.
+
 **Env overrides**
 
 | Var | Default | Purpose |
@@ -78,6 +84,8 @@ specific about triggers. After editing, changes apply on the next session (no re
 ```
 install.sh             one-line installer (macOS / Linux / WSL / Git Bash)
 install.ps1            one-line installer (Windows PowerShell)
+hooks/
+  memory-guard.sh      Claude Code PreToolUse hook: one heavy job at a time on a 16 GB machine
 skills/
   coding-principles/SKILL.md
   ui-review/SKILL.md

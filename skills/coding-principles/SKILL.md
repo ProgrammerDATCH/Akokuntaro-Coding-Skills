@@ -135,6 +135,32 @@ Self-documenting code first. Good names and types carry the meaning.
   core business logic and utilities well; UI smoke-test the critical paths.
 - Secrets via env vars only — never hard-code keys/tokens. Provide `example.env`.
 
+## Keep the dev machine alive — one heavy job at a time
+
+David works on a 16 GB laptop. When agents run too much at once, RAM and swap run out and macOS
+**kernel-panics** (watchdog timeout): every app freezes, the machine reboots, and every session's work
+is lost. It happened ~5 times a day until these rules. They apply in every repo:
+
+- **Tests:** never let jest pick its own worker count — it starts one per core, and with ts-jest each
+  worker type-checks the whole project (~2.8 GB each, ~20 GB total). Repos set `maxWorkers: 2`,
+  `workerIdleMemoryLimit: '512MB'` and ts-jest `isolatedModules: true` in `jest.config` (`tsc --noEmit`
+  is the type check); where a repo doesn't, pass `--maxWorkers=2 --workerIdleMemoryLimit=512MB` (or `-i`).
+- **One heavy job at a time:** never run tests, `tsc`, `next build` or a browser sweep concurrently
+  with each other — not in one agent, not across agents. At most 2 agents at once.
+- **`next build`:** one at a time, with `NODE_OPTIONS=--max-old-space-size=3072`; delete any scratch
+  copy of the repo you built in as soon as the build is checked.
+- **Browser testing:** one browser, at most 2 tabs, one context per role reused; close the browser
+  when the sweep ends. Never leave headless browsers running.
+- **Dev servers:** run only the servers the task needs; TypeScript dev servers transpile only
+  (`ts-node --transpile-only`, `tsx`), never type-check in watch mode.
+- **Check before heavy steps:** `sysctl vm.swapusage` — above ~6 GB used, stop and free memory first
+  (finished browsers, leftover jest/build processes, servers the task doesn't need).
+- **Disk:** keep 50 GB+ free — swap lives on disk; a full disk turns memory pressure into a crash.
+  Never leave big dumps, build copies or logs behind.
+
+The installer adds a Claude Code hook (`hooks/memory-guard.sh`) that enforces the first, second and
+sixth rules mechanically; the rest are on you.
+
 ## Scope & verification — finish the job, then prove it
 
 The two ways work comes back rejected are **narrowing the ask** and **calling it done without

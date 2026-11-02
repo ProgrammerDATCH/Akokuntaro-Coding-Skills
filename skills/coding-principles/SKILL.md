@@ -135,31 +135,45 @@ Self-documenting code first. Good names and types carry the meaning.
   core business logic and utilities well; UI smoke-test the critical paths.
 - Secrets via env vars only — never hard-code keys/tokens. Provide `example.env`.
 
-## Keep the dev machine alive — one heavy job at a time
+## Keep the dev machine alive — parallel, inside a memory budget
 
 David works on a 16 GB laptop. When agents run too much at once, RAM and swap run out and macOS
 **kernel-panics** (watchdog timeout): every app freezes, the machine reboots, and every session's work
-is lost. It happened ~5 times a day until these rules. They apply in every repo:
+is lost. It happened ~5 times a day until these rules. Parallelism is welcome — it finishes work
+faster — as long as it stays inside the **safe zone**:
 
+| Gauge (check before starting a heavy job) | Safe — go | Stop — wait or free memory |
+| --- | --- | --- |
+| `memory_pressure \| tail -1` (free %) | 25% or more | under 15% |
+| `sysctl vm.swapusage` (used) | under 4 GB | over 6 GB |
+| Heavy jobs already running | 0–2 | 3 |
+| Free disk | 50 GB+ | under 20 GB |
+
+A **heavy job** is a test run, `tsc`, `next build`, or a headless-browser sweep. Budget them like this:
+
+- **Up to 3 heavy jobs at once** (across all agents), e.g. tests + `tsc` + one browser sweep, while
+  the gauges stay green. Between the two lines, finish what's running before starting more.
+- **Agents:** as many as David allows for the batch (his usual cap is 2); the heavy-job budget is
+  shared between all of them, so agents count each other's jobs too.
 - **Tests:** never let jest pick its own worker count — it starts one per core, and with ts-jest each
   worker type-checks the whole project (~2.8 GB each, ~20 GB total). Repos set `maxWorkers: 2`,
-  `workerIdleMemoryLimit: '512MB'` and ts-jest `isolatedModules: true` in `jest.config` (`tsc --noEmit`
-  is the type check); where a repo doesn't, pass `--maxWorkers=2 --workerIdleMemoryLimit=512MB` (or `-i`).
-- **One heavy job at a time:** never run tests, `tsc`, `next build` or a browser sweep concurrently
-  with each other — not in one agent, not across agents. At most 2 agents at once.
-- **`next build`:** one at a time, with `NODE_OPTIONS=--max-old-space-size=3072`; delete any scratch
-  copy of the repo you built in as soon as the build is checked.
-- **Browser testing:** one browser, at most 2 tabs, one context per role reused; close the browser
-  when the sweep ends. Never leave headless browsers running.
+  `workerIdleMemoryLimit: '512MB'` and ts-jest `isolatedModules: true` (`tsc --noEmit` is the type
+  check); then a worker costs ~300–500 MB. Raise to `--maxWorkers=4` when the gauges are green and
+  nothing else heavy runs; never above 4. Without the repo config, always pass the flags (or `-i`).
+- **`next build`:** one at a time (each takes 2–4 GB), with `NODE_OPTIONS=--max-old-space-size=3072`;
+  delete a scratch copy of the repo as soon as its build is checked.
+- **Browsers:** at most 2 headless browsers at once, each with at most 3 tabs; reuse one context per
+  role; close the browser when the sweep ends. Never leave headless browsers running.
 - **Dev servers:** run only the servers the task needs; TypeScript dev servers transpile only
   (`ts-node --transpile-only`, `tsx`), never type-check in watch mode.
-- **Check before heavy steps:** `sysctl vm.swapusage` — above ~6 GB used, stop and free memory first
-  (finished browsers, leftover jest/build processes, servers the task doesn't need).
-- **Disk:** keep 50 GB+ free — swap lives on disk; a full disk turns memory pressure into a crash.
-  Never leave big dumps, build copies or logs behind.
+- **Red gauge:** stop starting work, free memory (finished browsers, leftover test/build processes,
+  servers the task doesn't need), then continue. Never push through a red gauge.
+- **Disk:** swap lives on disk; a full disk turns memory pressure into a crash. Never leave big dumps,
+  build copies or logs behind.
 
-The installer adds a Claude Code hook (`hooks/memory-guard.sh`) that enforces the first, second and
-sixth rules mechanically; the rest are on you.
+The installer adds a Claude Code hook (`hooks/memory-guard.sh`) that refuses a heavy job on a red
+gauge, a 4th heavy job, jest above 4 workers or with no cap, a second `next build`, and a 3rd headless
+browser. The rest is on you.
 
 ## Scope & verification — finish the job, then prove it
 

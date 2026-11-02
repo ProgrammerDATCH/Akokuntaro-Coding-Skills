@@ -46,8 +46,10 @@ The installer fetches (or updates) the skills source, detects every agent that u
 allowed). It's re-runnable and idempotent; run it again to update.
 
 On Claude Code it also installs the **memory guard** (`hooks/memory-guard.sh`) as a `PreToolUse`
-hook on Bash: it refuses a jest run with no worker cap, a second `next build`, and any heavy job
-while swap is above 6 GB — the rules in coding-principles "Keep the dev machine alive". It adds the
+hook on Bash. Parallel work is allowed inside a memory budget; it refuses a heavy job (tests, `tsc`,
+`next build`, a headless browser) when memory is in the red (under 15% free or swap over 6 GB) or 3
+are already running, jest above 4 workers or with no cap, a second `next build`, and a 3rd headless
+browser — the rules in coding-principles "Keep the dev machine alive". It adds the
 hook to `~/.claude/settings.json` once (needs `jq`) and leaves the rest of the file alone. Bash
 installer only.
 
@@ -85,7 +87,7 @@ specific about triggers. After editing, changes apply on the next session (no re
 install.sh             one-line installer (macOS / Linux / WSL / Git Bash)
 install.ps1            one-line installer (Windows PowerShell)
 hooks/
-  memory-guard.sh      Claude Code PreToolUse hook: one heavy job at a time on a 16 GB machine
+  memory-guard.sh      Claude Code PreToolUse hook: keeps parallel work inside a 16 GB machine's budget
 skills/
   coding-principles/SKILL.md
   ui-review/SKILL.md

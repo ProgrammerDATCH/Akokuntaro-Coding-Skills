@@ -386,6 +386,39 @@ Every line below is a real correction from a recent session. Each one costs a ro
 - **Suspect the dev server before the code** when a route 404s but its file is present and its
   siblings load.
 
+## What David comes back for — get it right on the first pass
+
+Each of these came back as a follow-up AFTER work was reported done (KARAME/BERULO, Oct–Nov 2026).
+Check them before calling anything finished; the visual ones are detailed in ui-review.
+
+- **One word, one meaning.** Before a label ships, ask whether it could mean two things to the
+  reader. "Staff" in a school product means *non-teaching staff* — the accounts an SMS goes to are
+  "Users"; a tab that signs in with a username is "Username", not "Password". Use the term the product
+  already uses for that concept, and the same word for it on every screen, export and API label.
+- **A change to a shared surface lands in every sibling app in the same pass.** Login tabs, landing
+  pages, labels, phone inputs and menus exist in KARAME, BERULO, ECD and UWI. Grep the siblings for the
+  same string or component before reporting; a fix in one app is half a fix.
+- **Prove speed at production size, not on the local copy.** Before shipping a query on a big table
+  (Student is 4.4M rows in prod; local has ~300k), run `EXPLAIN ANALYZE` and look for a sequential
+  scan. A relation filter (`some`) inside a big `OR` turns indexed lookups into a full scan — resolve
+  the ids first, then match by id. Time every new endpoint at national scope. A preview computes only
+  what it shows (the one selected recipient, the current page), never the whole set.
+- **Test the person who holds two roles, and where every flow lands.** A teacher can be a parent; a
+  head teacher can claim a child; an officer can be a partner. Drive the flow as that person and
+  check where they end up: back where they came from or on the page the action was for — never on
+  another role's setup screen, never in a redirect loop or an endless spinner.
+- **Each environment is controlled from its own sibling environment.** Local reads local, UAT reads
+  UAT. Testing something on UAT must never require touching production (switches, flags, keys,
+  config). When one integration URL serves several jobs, give the testable part its own setting that
+  falls back to the shared one.
+- **Inputs accept what people naturally type.** A phone box takes 0788…, 788…, +250… and 250…; a name
+  search is case-insensitive and matches every typed word anywhere in the name; the server normalises.
+  Rejecting a natural spelling is a bug, not validation. (Rwanda specifics: rwanda-identifiers.)
+- **Every project owns its own dev ports.** Before giving a server a port, check the other projects'
+  dev scripts; two projects on one port means one script's `stop` kills the other's servers.
+  Current map: BERULO web 4000 / API 9090 / realtime 9091, KARAME web 3100 / API 9100, KABISA web 3000
+  / API 9095 / Sana 3001, ECD 3400 / 9096, UWI 3500 / 9097.
+
 ## Put the capability where the knowledge is
 
 The single most repeated correction. Four times in one session: add a support user from the board

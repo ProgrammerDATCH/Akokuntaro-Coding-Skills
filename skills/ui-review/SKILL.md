@@ -48,6 +48,33 @@ drill/search bar makes an eight-select filter panel redundant; a summary tile ro
 filters makes a chip row redundant. Rebuilding or porting a page is the moment to prune,
 not to faithfully carry the duplication forward.
 
+## Nothing covers anything
+
+Check that every element is VISIBLE, not just present. Each of these passed an "it renders" check:
+
+- A map icon drawn over another marker's name. Labels go on a layer above every icon, and each
+  label takes the first free side (below, above, right, left) that covers no icon and no other label.
+- Two search boxes pushing a toggle off a phone screen. Controls that share a row wrap or shrink;
+  nothing is pushed past the viewport.
+- A popup taller or wider than the phone. Dialogs fit 390px, and their content scrolls inside them.
+
+## The menu fits the reader
+
+- **An entry appears only for a role that can USE it** — has something to do there, not merely a
+  permission that lets the page load. A "Users & Credentials" page for someone with nobody below
+  them to add, or an empty list a role can never fill, is noise. Hide it for that role.
+- **The section the reader is in comes first.** While on a group's pages (e.g. "My children"),
+  that group moves up under Dashboard and opens; elsewhere it keeps its usual place.
+- **Nothing the role needs goes missing.** When reworking a menu, check every role that had an
+  entry still has it (a village officer losing "Learners" shipped once).
+
+## Editors for people who don't code
+
+An admin writing a template is not a developer. Variables are single tokens: one Backspace or Delete
+removes the whole `{token}`, a selection over part of one takes all of it, and tokens look different
+from text (italic, coloured like inline code). Per-role or conditional text is one chip that opens a
+small form, never syntax to type. A live preview of the result sits beside the editor on desktop.
+
 ## A gate must have a way out
 
 A modal that opens by itself and cannot be closed is not a prompt, it is a wall. If a screen
@@ -119,5 +146,10 @@ Before reporting UI work done, drive it at BOTH widths — a real desktop viewpo
    reachable behind it.
 9. The COLD load, watched from first paint: no placeholder resting on a round number, no
    fallback that widens the scope, no "never" where "counting…" belongs.
+10. Nothing covering anything: labels clear of icons, no control pushed off the phone screen,
+    no dialog wider or taller than the viewport.
+11. The menu as each affected role: no entry they cannot use, nothing they need missing, the
+    current section first.
+12. Every label read once more for a second meaning (see coding-principles, "One word, one meaning").
 
 Report which widths and roles were driven, and what was deliberately left out.

@@ -175,6 +175,27 @@ The installer adds a Claude Code hook (`hooks/memory-guard.sh`) that refuses a h
 gauge, a 4th heavy job, jest above 4 workers or with no cap, a second `next build`, and a 3rd headless
 browser. The rest is on you.
 
+## Deleting files — never wider than you meant
+
+A delete goes exactly as far as its path, and a path built from a variable is only as safe as the
+variable. `rm -f $S/*` with an empty `S` is `rm -f /*`; with `-r`, a `sudo` or a Linux box, the same
+slip takes everything it can write. Write every delete so a mistake can't reach further than intended:
+
+- **Guard every variable in a delete:** `rm -rf "${OUT:?}"/*`, never `rm -rf $OUT/*`. `:?` makes the
+  shell stop when the variable is empty or unset, instead of running rm on what is left of the path.
+- **Prefer not deleting at all.** A fresh folder per run (`prwatch-$(date +%s)`, `mktemp -d`) needs no
+  clean-up step. When something must go, delete the named files, not a glob or a whole folder.
+- **`rm -r` only where deleting is routine:** the session scratchpad, temp folders (`mktemp`) and
+  build output (`node_modules`, `dist`, `.next`, `coverage`, caches). Anything else, such as source
+  folders, a repo or anything under home, is David's call: say what and why, and let him remove it.
+- **Never `sudo`.** If something truly needs root, ask David to run it.
+- **A blocked delete is a stop sign, not an obstacle.** Never split it up, script around it or move it
+  to another tool. Rewrite it safely, or drop it. Say in the reply that it was blocked and what was meant.
+
+The installer adds a Claude Code hook (`hooks/delete-guard.sh`) that refuses each of these: rm on an
+unguarded variable, anything at `/`, home or less than three folders deep, a recursive delete or
+`find -delete` outside temp and build folders, `xargs rm -r`, and `sudo`.
+
 ## Scope & verification — finish the job, then prove it
 
 The two ways work comes back rejected are **narrowing the ask** and **calling it done without
@@ -379,6 +400,8 @@ Every line below is a real correction from a recent session. Each one costs a ro
 - **Reuse THE component**, never a lookalike built in the same spirit.
 - **Never create backup copies of files** — no `.bak`, `.orig`, `.backup`, not even temporarily.
   Git is the undo.
+- **Guard every delete:** `"${VAR:?}"` in every `rm`, `rm -r` only in temp and build folders, never
+  `sudo`. A blocked delete is rewritten or dropped, never worked around ("Deleting files").
 - **Never add Claude/Anthropic attribution** to commits or PRs.
 - **Descriptive prose is desktop furniture** — `hidden sm:block` it on phones, all of it, not just
   the sentence that was quoted.

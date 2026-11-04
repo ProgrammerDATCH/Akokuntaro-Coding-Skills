@@ -54,6 +54,18 @@ browser — the rules in coding-principles "Keep the dev machine alive". It adds
 hook to `~/.claude/settings.json` once (needs `jq`) and leaves the rest of the file alone. Bash
 installer only.
 
+It also installs the **delete guard** (`hooks/delete-guard.sh` + `delete-guard.py`) as a second
+`PreToolUse` hook on Bash. It refuses:
+- `rm` on an unguarded variable (`rm -f $S/*`; `"${S:?}"` is fine);
+- anything at `/`, home or less than three folders deep;
+- `rm -r` or `find -delete` outside temp folders and build output (`node_modules`, `dist`, `.next`...);
+- `xargs rm -r`;
+- `sudo`.
+
+Words in a commit message, `echo` or heredoc don't trip it. The rules are in coding-principles,
+"Deleting files", and the cases in `hooks/delete-guard.test.sh`. Needs `jq` and `python3`; Bash
+installer only.
+
 It also installs David's two **work modes** as skills — `/full` (plan, then full browser testing per
 role) and `/quick` (code checks only) — plus a hook that remembers the mode per session and a status
 line badge (`FULL` or `QUICK`; every new session starts in FULL) in front of whatever status line was already set.
@@ -95,6 +107,9 @@ hooks/
   work-mode.sh         UserPromptSubmit hook: records FULL / QUICK per session, reminds the model
   statusline-mode.sh   status line badge FULL / QUICK in front of the previous status line
   memory-guard.sh      Claude Code PreToolUse hook: keeps parallel work inside a 16 GB machine's budget
+  delete-guard.sh      Claude Code PreToolUse hook: refuses deletes that could reach further than meant
+  delete-guard.py      its rules (shlex-parsed, so quoted text never counts)
+  delete-guard.test.sh the cases it must block and allow: bash hooks/delete-guard.test.sh
 skills/
   coding-principles/SKILL.md
   ui-review/SKILL.md

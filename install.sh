@@ -111,6 +111,33 @@ install_memory_guard() {
   ok "memory guard hook -> $settings"
 }
 
+# Claude Code only: the delete guard (see coding-principles "Deleting files") as a PreToolUse hook
+# on Bash. It refuses rm on an unguarded variable, anything near / or home, a recursive delete outside
+# temp and build folders, and sudo. Both files are symlinked, so a pull updates them; settings.json
+# gains the hook once. Needs jq and python3; skipped with a warning without them.
+install_delete_guard() {
+  claude_dir="${CLAUDE_CONFIG_DIR%%:*}"; claude_dir="${claude_dir:-$HOME/.claude}"
+  [ -d "$claude_dir" ] || return 0
+  mkdir -p "$claude_dir/hooks"
+  for script in delete-guard.sh delete-guard.py; do
+    ln -sfn "$SRC_DIR/hooks/$script" "$claude_dir/hooks/$script" 2>/dev/null \
+      || cp "$SRC_DIR/hooks/$script" "$claude_dir/hooks/$script"
+  done
+  command -v python3 >/dev/null 2>&1 || warn "python3 not found — the delete guard will skip its checks"
+  command -v jq >/dev/null 2>&1 || { warn "jq not found — add the delete-guard hook to settings.json by hand"; return 0; }
+  settings="$claude_dir/settings.json"
+  [ -f "$settings" ] || echo '{}' > "$settings"
+  if jq -e '[.hooks.PreToolUse[]?.hooks[]?.command] | any(test("delete-guard.sh"))' "$settings" >/dev/null 2>&1; then
+    ok "delete guard hook already registered"
+    return 0
+  fi
+  tmp="$(mktemp)"
+  jq --arg cmd "bash \"$claude_dir/hooks/delete-guard.sh\"" \
+    '.hooks.PreToolUse = ((.hooks.PreToolUse // []) + [{"matcher":"Bash","hooks":[{"type":"command","command":$cmd,"timeout":10,"statusMessage":"Checking deletes"}]}])' \
+    "$settings" > "$tmp" && mv "$tmp" "$settings"
+  ok "delete guard hook -> $settings"
+}
+
 # Claude Code only: David's work modes, FULL (/full) and QUICK (/quick). work-mode.sh records the
 # mode per session and reminds the model of it on every message; statusline-mode.sh shows it in front
 # of whatever status line was already set up (saved to statusline-inner.txt). Idempotent; needs jq.
@@ -157,6 +184,7 @@ main() {
     [ -n "$entry" ] && install_into "${entry%%|*}" "${entry#*|}"
   done
   install_memory_guard
+  install_delete_guard
   install_work_mode
   info "Done — installed: ${SKILLS// /, }"
   info "Start a new agent session to pick up the skills."

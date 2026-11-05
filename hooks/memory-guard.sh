@@ -14,8 +14,9 @@ cwd=$(printf '%s' "$input" | jq -r '.cwd // empty')
 MAX_HEAVY_JOBS=3      # tests, tsc, next build, headless browsers — across all sessions
 MAX_JEST_WORKERS=4
 MAX_BROWSERS=2
-MIN_FREE_PCT=15       # memory_pressure "free percentage" below this = red
-MAX_SWAP_MB=6144
+MIN_FREE_PCT=7        # memory_pressure "free percentage" below this = red (~1 GB of 16 GB)
+MAX_SWAP_MB=6144      # swap counts only while RAM is also tight (under SWAP_FREE_PCT free):
+SWAP_FREE_PCT=20      # macOS keeps stale pages in swap long after RAM frees, so swap alone is no signal
 
 block() { echo "Memory guard: $1" >&2; exit 2; }
 
@@ -39,7 +40,7 @@ if runs 'jest|tsc|playwright' || runs_build || starts_browser; then heavy=1; fi
 if [ $heavy -eq 1 ]; then
   swap_mb=$(sysctl -n vm.swapusage | sed -E 's/.*used = ([0-9.]+)M.*/\1/' | cut -d. -f1)
   free_pct=$(memory_pressure 2>/dev/null | tail -1 | grep -oE '[0-9]+' | tail -1)
-  [ "${swap_mb:-0}" -gt $MAX_SWAP_MB ] && block "swap is ${swap_mb} MB used (red above $MAX_SWAP_MB). Free memory first (finished browsers, leftover test/build processes, servers the task doesn't need), then retry."
+  [ "${swap_mb:-0}" -gt $MAX_SWAP_MB ] && [ -n "$free_pct" ] && [ "$free_pct" -lt $SWAP_FREE_PCT ] && block "swap is ${swap_mb} MB used with only ${free_pct}% RAM free (red above $MAX_SWAP_MB MB swap under ${SWAP_FREE_PCT}% free). Free memory first (finished browsers, leftover test/build processes, servers the task doesn't need), then retry."
   [ -n "$free_pct" ] && [ "$free_pct" -lt $MIN_FREE_PCT ] && block "only ${free_pct}% memory free (red under ${MIN_FREE_PCT}%). Free memory first, then retry."
   jobs=$(( $(running_jest) + $(running_tsc) + $(running_builds) + $(running_browsers) ))
   [ "$jobs" -ge $MAX_HEAVY_JOBS ] && block "$jobs heavy jobs are already running (tests, tsc, builds, browsers; limit $MAX_HEAVY_JOBS across all sessions). Wait for one to finish."

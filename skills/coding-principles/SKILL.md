@@ -144,10 +144,13 @@ faster — as long as it stays inside the **safe zone**:
 
 | Gauge (check before starting a heavy job) | Safe — go | Stop — wait or free memory |
 | --- | --- | --- |
-| `memory_pressure \| tail -1` (free %) | 25% or more | under 15% |
-| `sysctl vm.swapusage` (used) | under 4 GB | over 6 GB |
+| `memory_pressure \| tail -1` (free %) | 15% or more | under 7% (~1 GB of 16 GB) |
+| `sysctl vm.swapusage` (used) | any, while RAM is 20%+ free | over 6 GB **and** RAM under 20% free |
 | Heavy jobs already running | 0–2 | 3 |
 | Free disk | 50 GB+ | under 20 GB |
+
+Swap alone is no signal: macOS keeps stale pages in swap long after RAM frees, so a high swap figure
+with plenty of free RAM blocks nothing (David, 2026-11-05).
 
 A **heavy job** is a test run, `tsc`, `next build`, or a headless-browser sweep. Budget them like this:
 

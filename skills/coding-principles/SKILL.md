@@ -45,6 +45,15 @@ most often.
   through them one at a time; he has said explicitly that "one at a time" is too slow for a batch.
   Give each agent the full context it needs (ports, tokens, the rules above) so it does not come
   back to ask.
+- **A finished agent leaves the agent list.** An agent stays listed (with a frozen timer and token
+  count) while any background command it started is still alive, so David waits on work that is
+  already done. Two halves:
+  - *The agent:* before its final reply, stop every background command it started (a `node`
+    sweep, a server, a `tail`/`until` loop) — or never background a command it will not wait for.
+    Put this line in every agent brief.
+  - *The lead:* when an agent's final report arrives but the notification says it is still
+    "waiting on its own background work", stop it at once (TaskStop with its id) before reporting.
+    Never leave a reported agent listed.
 - **"Done" means tested**, per the verification rules below — so finishing the batch means every
   item driven, not every item compiled.
 

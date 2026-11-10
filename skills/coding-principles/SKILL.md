@@ -201,6 +201,13 @@ slip takes everything it can write. Write every delete so a mistake can't reach 
   build output (`node_modules`, `dist`, `.next`, `coverage`, caches). Anything else, such as source
   folders, a repo or anything under home, is David's call: say what and why, and let him remove it.
 - **Never `sudo`.** If something truly needs root, ask David to run it.
+- **No variables in a delete typed on the command line: write the literal path.** Claude Code asks
+  "Dangerous rm/rmdir on possibly-empty variable path" for `rm`/`rmdir "$L/${S:?}"` even in bypass mode,
+  and David is often away from the PC, so an agent stalls for hours on a Yes he can't click. Type the
+  full literal path (`rmdir /tmp/…/locks/heavy-2`). Where the path is only known at run time (a lock
+  slot picked in a loop, a timestamped folder), put the whole take-run-free cycle in a small script
+  file and call the script, e.g. a `with-slots.sh <command>` that takes a slot, runs the command and
+  frees the slot inside the script. Put this rule in every agent brief.
 - **A blocked delete is a stop sign, not an obstacle.** Never split it up, script around it or move it
   to another tool. Rewrite it safely, or drop it. Say in the reply that it was blocked and what was meant.
 

@@ -230,7 +230,9 @@ FULL mode, in detail:
 - **Ask clarifying questions BEFORE starting.** Once started, work the batch through non-stop —
   don't stop halfway to check in; finish all of it.
 - **Done means driven in Chrome at BOTH widths** — ~390px and desktop — with no error left on
-  the screen or in the console.
+  the screen or in the console. "Chrome" means David's real, visible Chrome through the Claude in
+  Chrome extension, click by click; a headless script he cannot watch does not count (ui-review,
+  "The pass itself").
 - **Where several roles reach the feature, done means driven AS EACH ROLE**, so nobody lands on
   a scope-specific error.
 - **Use real users from the local database**, and create a user there when a role has none.

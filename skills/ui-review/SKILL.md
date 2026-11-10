@@ -129,6 +129,18 @@ coding-principles, "Never show users how the system works".
 
 ## The pass itself
 
+**Drive it in David's real, visible Chrome — the Claude in Chrome extension (`mcp__claude-in-chrome__*`),
+click by click — never only a headless script.** He watches the clicks; a headless Playwright run he
+cannot see does not count as "tested in Chrome". Open a new tab, `resize_window` to ~390px wide for the
+phone pass and to a desktop size for the other, and reach every screen through the menu.
+
+- **Signing in locally:** set a local test password on the local account you need (hash it with the
+  backend's own password helper, set `passwordSetAt` so no change-password gate opens), keep the value
+  in the backend's gitignored `.env` (e.g. `LOCAL_TEST_PASSWORD`), and type it on the localhost sign-in
+  page. Local dev hosts only, never a real or production account's password, never repeated in chat.
+- A headless script may still help for a long sweep (many roles × pages) or a data check, but the
+  feature itself is driven in the real Chrome before it is called done.
+
 Before reporting UI work done, drive it at BOTH widths — a real desktop viewport and a
 ~390px phone view — and hunt specifically for:
 

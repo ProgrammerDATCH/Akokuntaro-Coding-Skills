@@ -24,8 +24,10 @@ What that means in practice:
 
 - **Ask first, once.** Read every task, collect every question, ask them all before starting. After
   that, never stop to ask or report until the last item is done.
-- **Done = driven.** Each item is tested in Chrome at ~390px AND desktop width with no error on
-  screen, in the console or in the network log. A mobile app is done when tested in the emulator.
+- **Done = driven.** Each item is tested in David's real, visible Chrome (the Claude in Chrome
+  extension, click by click — not a headless script) at ~390px AND desktop width with no error on
+  screen, in the console or in the network log. Sign in on localhost with a local test password
+  (ui-review, "The pass itself"). A mobile app is done when tested in the emulator.
 - **Every role.** Where several roles reach a feature, drive it as each of them, using real local
   users (create them in the local DB when a role has none).
 - **At most 2 agents in parallel**, inside the memory budget (coding-principles, "Keep the dev machine

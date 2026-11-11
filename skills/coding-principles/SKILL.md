@@ -309,6 +309,36 @@ not tested until it has been exercised **as each role that reaches it**.
 path was eyeballed is worse than saying it is untested, because it moves the finding to the
 person who asked for it — and they WILL find it.
 
+### Test every edge, then test what he described
+
+A rule with a boundary (a time, a limit, a threshold, a count) is tested at the boundary, not with
+one sample from the middle. An attendance window tested only at 02:20 and 02:25 was reported as
+working; David saved at 02:24 after the "until 02:18" he had set, because a hidden 30-minute grace
+kept it open. Each boundary gets the minute BEFORE, the minute AT and the minute AFTER, and each
+phase (before, open, late, shut) gets the real write — once without the extra input (a reason) and
+once with it — and its server answer checked, not only the screen.
+
+- **Replay his exact case** as a test (his values, his time), and say so in the report.
+- **Test the test.** A script that sends a malformed request, or reuses one idempotency key (zsh
+  repeats `$RANDOM` inside `$(...)`), passes or fails for the wrong reason. When a result is
+  surprising, check the harness before the app.
+- **No hidden magic numbers in behaviour.** A grace period, a cap, a default window that the screen
+  does not show is a setting the admin cannot see or change. Make it a field with its own label, or
+  drop it — and enforce exactly what the screen says.
+
+### Always end with a test report
+
+Every reply that changed or checked behaviour ends with a short test report, so David never has
+to ask "did you test it?". Never skip it, never fold it into prose:
+
+| What | How (unit / API / headless 390 & 1366 / real Chrome, as which role) | Result |
+|---|---|---|
+| each behaviour and each edge | the method and the role | PASS / FAIL, with the number or answer seen |
+
+Then one line on what was NOT tested and why (no device, no data, out of reach). A test that ran but
+failed for a harness reason is listed as such, with the re-run. Totals (e.g. "jest 658 passed") go in
+the table too.
+
 ### Numbers must reconcile
 
 David audits arithmetic. Any figure you touch must re-add: parts sum to the total

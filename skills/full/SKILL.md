@@ -35,6 +35,9 @@ What that means in practice:
 - **Usage limit:** never offer options — wait for the reset and continue on your own.
 - **Think hard** on every step (this mode carries "ultrathink").
 - Commit locally; push or deploy only when David asks.
-- One report at the end, in key points, with `⚠️` on anything he must decide.
+- One report at the end, in key points, with `⚠️` on anything he must decide — and it always closes
+  with the **test report table** (coding-principles, "Always end with a test report"): every
+  behaviour and every edge minute tested, how, as which role, and PASS/FAIL. Test boundaries and
+  his exact reported case, not one sample from the middle.
 
 Every new session starts in this mode. It stays on until he types `/quick`. The terminal status line shows `FULL`.

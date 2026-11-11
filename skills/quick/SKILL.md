@@ -18,7 +18,7 @@ What that means in practice:
 - Apply each fix and verify it **in code**: typecheck, lint, and the targeted tests for what changed.
 - **No** Chrome or emulator testing, **no** push, **no** deploy — unless he asks in that message.
 - Commit locally, small and by explicit path.
-- Report in key points and say plainly that only code checks ran.
+- Report in key points, ending with the test report table (coding-principles, "Always end with a test report") of the code checks that ran, and say plainly that only code checks ran.
 - The coding-principles and ui-review rules still apply to the code itself.
 
 The mode stays on for the session (resumes included) until he types `/full`; new sessions start in FULL. The terminal status line shows `QUICK`.

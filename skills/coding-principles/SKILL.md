@@ -58,7 +58,7 @@ most often.
   item driven, not every item compiled.
 
 The report comes once, at the end, covering everything: what landed, what was verified, and the
-collected `⚠️` questions.
+collected `🔴` questions.
 
 ## Reuse & abstraction — bias toward DRY (aggressive)
 
@@ -408,10 +408,22 @@ gets buried and he has to hunt for it. Write the reply as short key points, not 
   request, no narration of the journey.
 - **One line per point.** If a point needs a "why", it gets a clause, not a paragraph. Cut every
   sentence that does not change what he knows or does.
-- **Prefix anything he must act on or decide with `⚠️`** — a recommendation, a choice only he can
-  make, a manual step, a risk, something deliberately left undone. He scans for the marker rather
-  than reading for it, so an unflagged ask is an ask he will miss.
-- Nothing else gets the marker. Marking ordinary results trains him to ignore it.
+- **Mark the lines he scans for**, one marker at the START of the line, so the important ones
+  stand out of a long reply. Only these, and only for what they mean; marking ordinary lines
+  trains him to ignore them. Plain-width emojis only: ones that need a variation selector (⚠️,
+  🛠️) do not render in his terminal.
+
+  | Marker | Use it for |
+  |---|---|
+  | ❗ | The summarized explanation: the one-line answer, cause or result a section starts with |
+  | 🔴 | Something he must decide or do: a choice only he can make, a manual step, a risk he must accept |
+  | 🔍 | The root cause of an issue |
+  | 🔧 | The fix applied |
+  | ✅ | Done and verified (driven, not only compiled) |
+  | ⏳ | Still running or waiting on something |
+  | 🚫 | Not done or not tested, and why |
+
+  He scans for 🔴 rather than reading for it, so an ask without it is an ask he will miss.
 - Detail belongs in the commit message and the code comments, where it is searchable, not in the
   reply.
 
@@ -420,15 +432,15 @@ compiled, say that instead. Just say it in a line, not a section.
 
 Example shape:
 
-    Partner boards fixed — three separate causes, all shipped.
+    ❗ Partner boards fixed — three separate causes, all shipped.
 
-    - Stale role allowlist beside the RBAC grant; deleted, scope still clamps per role.
-    - Partners lacked `attendance.view`, so the drill 403'd. New migration, VIEW only.
-    - Card linked to the head teacher's page, not theirs.
+    - 🔍 Stale role allowlist beside the RBAC grant. 🔧 Deleted; scope still clamps per role.
+    - 🔍 Partners lacked `attendance.view`, so the drill 403'd. 🔧 New migration, VIEW only.
+    - 🔍 Card linked to the head teacher's page, not theirs. 🔧 Points at their own page.
 
-    Driven as all 8 roles at both widths; numbers reconcile.
+    ✅ Driven as all 8 roles at both widths; numbers reconcile.
 
-    ⚠️ UAT has the roles but no partner accounts — an admin must create them before anyone can
+    🔴 UAT has the roles but no partner accounts — an admin must create them before anyone can
        sign in as one.
 
 ### Corrections that keep recurring
@@ -585,7 +597,7 @@ the owner or I am? I told u what to show."
 - **Implement the wording he gives, literally**, on every app and every place the text appears.
 - **Remove completely what he says to remove** — the UI, its texts, the client code that fed it and
   any endpoint left with no other caller. Not "kept read-only", not softened into a hint.
-- **Don't argue, don't re-ask, don't flag it as a ⚠️ question** in the report. A product choice
+- **Don't argue, don't re-ask, don't flag it as a 🔴 question** in the report. A product choice
   about what users see is not a risk for him to re-confirm.
 - The only exception is something genuinely harmful or illegal (e.g. it would take payment or
   personal data under false pretences) — say so once, plainly, instead of quietly not doing it.

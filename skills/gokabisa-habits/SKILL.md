@@ -35,6 +35,28 @@ Team rule since 16 Nov 2026, agreed by Lukas and Kevin.
   it's posted; never assume it.
 - Merge only on David's yes for that PR (the standing rule).
 
+## Test open PRs together on `combined-preview` (local only)
+
+When more than one PR is open on the same app, David tests them all at once on a local branch
+called `combined-preview`: the base branch (`develop` / `staging`) with every open PR branch merged
+in. It exists only on his machine and is never pushed.
+
+- **Build or rebuild it** in each repo with
+  `~/.claude/skills/gokabisa-habits/scripts/combined_preview.sh <base> <pr-branch> ...`. It fetches,
+  resets `combined-preview` to `origin/<base>`, merges each PR branch, and points its push at a
+  remote that doesn't exist. The real guard is the global git `pre-push` hook
+  (`~/.config/git/hooks/pre-push`, copy in this repo's `hooks/git-pre-push-combined-preview.sh`):
+  it refuses any push of `combined-preview`, even `git push origin combined-preview`. Never bypass
+  it (`--no-verify`).
+- **Every change goes on the original PR branch**, never on `combined-preview`: commit and push the
+  fix on the PR branch, then rerun the script so the preview carries it. The script refuses to
+  rebuild if a commit sits only on `combined-preview`, and stops on a merge conflict (resolve it on
+  the PR branches).
+- **Run and test on it**: `run kabisa` serves whatever branch each repo has checked out. Screenshots
+  for a PR may come from the preview when they only show that PR's change.
+- Rebuild after any PR branch gets new commits; drop the PR from the list once it's merged; delete
+  the branch when nothing is open.
+
 ## Do the ticket exactly as written
 
 - Build what the ticket or David says, nothing more. No extra features, fields, buttons, filters,

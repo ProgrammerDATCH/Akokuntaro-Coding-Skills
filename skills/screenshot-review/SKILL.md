@@ -34,6 +34,20 @@ One JSON file per batch, in the session scratchpad (never inside a repo):
 - Name image files by what they show (`3-needs-info-tab-390.png`), not by timestamp.
 - Before adding a shot, hide or blur anything personal (emails, phones, a real location).
 
+## Mobile shots: always in a phone frame
+
+Every phone-width screenshot goes out inside a phone frame, never as a bare narrow strip.
+
+- In the app's own tab (same origin, so the sign-in carries over), set the screens to show, then
+  run `scripts/phone_frame.js` with the browser's JavaScript tool:
+  `window.PHONES = [{ path: '/rw/console/me?org=kabisa', label: 'My Work · Operator' }]`, then the
+  file's contents. Several entries put phones side by side (e.g. a before / after, or a redirect).
+- The app area is exactly 390px wide, under a status bar and above a home bar, so nothing is
+  hidden behind a notch.
+- Wait ~8–10 s for the frames to load, then interact inside the frame if the shot needs a sheet or
+  menu open, and capture with a zoom on the phone's region (`save_to_disk`).
+- Desktop shots stay plain browser screenshots.
+
 ## 2. Serve it
 
 ```bash

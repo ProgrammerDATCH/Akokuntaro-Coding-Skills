@@ -11,6 +11,7 @@ do/don't rules — so every session follows the same style.
 | **coding-principles** | Every coding task — reuse/DRY bias, naming, TypeScript rigor, minimal comments, error handling, do/don't. The base layer. |
 | **ui-review** | Every frontend/UI task, before calling it done — the phone-compact rules (secondary elements shrink to captions, prose hidden on phones, only tables scroll), one-control-per-job pruning, optical equality, and the finishing checklist. |
 | **rwanda-identifiers** | Any field holding a Rwandan phone number or National ID — the accepted spellings, the single normalised stored form, the 16-digit NID rule with its birth-year window, and the optional-field trap. |
+| **gokabisa-habits** | Any gokabisa repo or KAB ticket — Slack QA proof before In Review, screenshots in PRs, no merge to staging/develop before the Slack post, build the ticket exactly as written and ask before adding anything. |
 | **full** / **quick** | David's two work modes, typed as `/full` and `/quick`. FULL: questions first, then non-stop, every item driven in Chrome at both widths as every role (apps in the emulator). QUICK: fixes verified in code only, no browser, push or deploy. |
 | **nextjs-dashboard** | New frontends / full-stack dashboards — Next.js 15 App Router, React 19, Tailwind v4, shadcn/ui, TanStack Query, next-auth. *Default frontend.* |
 | **express-prisma-api** | Standalone backend APIs — Express + TypeScript + Prisma/MySQL, layered controllers/services, `ApiError`/`ERROR_CODES`, Joi, JWT. *Default backend.* |
@@ -85,7 +86,7 @@ line badge (`FULL` or `QUICK`; every new session starts in FULL) in front of wha
 
 ```bash
 mkdir -p ~/.claude/skills
-for s in coding-principles ui-review rwanda-identifiers nextjs-dashboard express-prisma-api react-vite-app python-app; do
+for s in coding-principles ui-review rwanda-identifiers gokabisa-habits nextjs-dashboard express-prisma-api react-vite-app python-app; do
   ln -sfn "$(pwd)/skills/$s" ~/.claude/skills/$s
 done
 ```
@@ -116,6 +117,7 @@ skills/
   full/SKILL.md
   quick/SKILL.md
   rwanda-identifiers/SKILL.md
+  gokabisa-habits/SKILL.md
   nextjs-dashboard/SKILL.md
   express-prisma-api/SKILL.md
   react-vite-app/SKILL.md

@@ -13,6 +13,7 @@ do/don't rules — so every session follows the same style.
 | **rwanda-identifiers** | Any field holding a Rwandan phone number or National ID — the accepted spellings, the single normalised stored form, the 16-digit NID rule with its birth-year window, and the optional-field trap. |
 | **gokabisa-habits** | Any gokabisa repo or KAB ticket — Slack QA proof before In Review, screenshots in PRs, no merge to staging/develop before the Slack post, build the ticket exactly as written and ask before adding anything. |
 | **screenshot-review** | Screenshots that need David's yes: one local page (`scripts/shot_review.py` + a JSON manifest) with what each shot proves, Approve / Request change / Reject per shot, downloads, and a Confirm step; decisions are saved to a JSON file to read back. |
+| **combined-preview** | Several open PRs on one repo: a local-only `combined-preview` branch (base + every PR branch, `scripts/combined_preview.sh`), every change on the original PR branch, and a git pre-push hook that refuses to push it. |
 | **full** / **quick** | David's two work modes, typed as `/full` and `/quick`. FULL: questions first, then non-stop, every item driven in Chrome at both widths as every role (apps in the emulator). QUICK: fixes verified in code only, no browser, push or deploy. |
 | **nextjs-dashboard** | New frontends / full-stack dashboards — Next.js 15 App Router, React 19, Tailwind v4, shadcn/ui, TanStack Query, next-auth. *Default frontend.* |
 | **express-prisma-api** | Standalone backend APIs — Express + TypeScript + Prisma/MySQL, layered controllers/services, `ApiError`/`ERROR_CODES`, Joi, JWT. *Default backend.* |
@@ -87,7 +88,7 @@ line badge (`FULL` or `QUICK`; every new session starts in FULL) in front of wha
 
 ```bash
 mkdir -p ~/.claude/skills
-for s in coding-principles ui-review rwanda-identifiers gokabisa-habits screenshot-review nextjs-dashboard express-prisma-api react-vite-app python-app; do
+for s in coding-principles ui-review rwanda-identifiers gokabisa-habits screenshot-review combined-preview nextjs-dashboard express-prisma-api react-vite-app python-app; do
   ln -sfn "$(pwd)/skills/$s" ~/.claude/skills/$s
 done
 ```
@@ -119,7 +120,8 @@ skills/
   quick/SKILL.md
   rwanda-identifiers/SKILL.md
   gokabisa-habits/SKILL.md
-  screenshot-review/SKILL.md, scripts/shot_review.py
+  screenshot-review/SKILL.md, scripts/shot_review.py, scripts/phone_frame.js
+  combined-preview/SKILL.md, scripts/combined_preview.sh, scripts/git-pre-push-hook.sh
   nextjs-dashboard/SKILL.md
   express-prisma-api/SKILL.md
   react-vite-app/SKILL.md

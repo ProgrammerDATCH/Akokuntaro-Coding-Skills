@@ -32,7 +32,8 @@ One JSON file per batch, in the session scratchpad (never inside a repo):
 
 - `title`: what the screen is. `meaning`: what this shot proves, in one plain sentence.
 - Name image files by what they show (`3-needs-info-tab-390.png`), not by timestamp.
-- Before adding a shot, hide or blur anything personal (emails, phones, a real location).
+- Never blur, crop out or hide any data in a shot. Screenshots show how the feature works with
+  real data, for the team, so they stay exactly as the screen shows them.
 
 ## Mobile shots: always in a phone frame
 

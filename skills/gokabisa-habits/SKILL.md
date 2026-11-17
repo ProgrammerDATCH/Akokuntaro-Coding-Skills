@@ -28,7 +28,9 @@ Team rule since 16 Nov 2026, agreed by Lukas and Kevin.
 ## Pull requests
 
 - **Screenshots in every PR** that changes something people see: the flow as tested, before and
-  after where it helps. If I can't attach them myself, I hand them to David to drop in.
+  after where it helps. David approves them first on the review page (screenshot-review skill);
+  only confirmed shots go into the PR or the Slack proof. If I can't attach them myself, I hand
+  him the approved files to drop in.
 - **No merge into `staging` or `develop` before the Slack proof post exists.** Ask David whether
   it's posted; never assume it.
 - Merge only on David's yes for that PR (the standing rule).

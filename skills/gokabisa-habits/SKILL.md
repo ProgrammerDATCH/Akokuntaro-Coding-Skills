@@ -40,7 +40,9 @@ Team rule since 16 Nov 2026, agreed by Lukas and Kevin.
 - When something seems missing or worth adding, **ask first** with a one-line suggestion. Build it
   only after David approves.
 - The same applies to writing: tickets, PR descriptions, comments, labels, links, code comments and
-  commit messages say only what was asked or done. No added meaning, no guessed scope, no extra
-  labels or "related" links nobody asked for.
+  commit messages say only what was asked or done. No added meaning, no guessed scope.
+- Be logical, not bare: a ticket still gets the labels that plainly fit it (a broken button is a
+  Bug, new behaviour is an Improvement or Feature) and its "Done when" line. What's cut is
+  invented scope and notes, not the parts a good ticket always has.
 - When David asks for a short reply on a ticket (for example "comment acknowledged"), write exactly
   that.

@@ -511,8 +511,8 @@ Check them before calling anything finished; the visual ones are detailed in ui-
   Rejecting a natural spelling is a bug, not validation. (Rwanda specifics: rwanda-identifiers.)
 - **Every project owns its own dev ports.** Before giving a server a port, check the other projects'
   dev scripts; two projects on one port means one script's `stop` kills the other's servers.
-  Current map: BERULO web 4000 / API 9090 / realtime 9091, KARAME web 3100 / API 9100, KABISA web 3000
-  / API 9095 / Sana 3001, ECD 3400 / 9096, UWI 3500 / 9097.
+  Current map: BERULO web 4000 / API 9090 / realtime 9091, KARAME web 3100 / API 9100, KABISA Sana
+  console 3000 / API 9095 / gokabisa.com 3001, ECD 3400 / 9096, UWI 3500 / 9097.
 
 ## Put the capability where the knowledge is
 
